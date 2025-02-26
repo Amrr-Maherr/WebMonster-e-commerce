@@ -9,7 +9,7 @@ export default function HeroSection() {
       <section>
         <div className="container">
           <div className="row">
-            <div className="col-4 d-none d-md-block">
+            <div className="col-2 d-none d-md-block">
               <motion.div
               style={{marginTop:"40px"}}
                 className="h-100"
@@ -44,7 +44,7 @@ export default function HeroSection() {
                 </ul>
               </motion.div>
             </div>
-            <div className="col-xl-8 col-12">
+            <div className="col-xl-10 col-12">
               <div
                 id="carouselExample"
                 style={{ marginTop: "40px" }}
