@@ -44,7 +44,7 @@ export default function HeroSection() {
                 </ul>
               </motion.div>
             </div>
-            <div className="col-8">
+            <div className="col-xl-8 col-12">
               <div
                 id="carouselExample"
                 style={{ marginTop: "40px" }}
