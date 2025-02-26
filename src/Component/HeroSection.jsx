@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import proOne from "../Assets/pexels-huy-phan-316220-2015876.jpg";
 import proTwo from "../Assets/pexels-polina-tankilevitch-4440525.jpg";
 import proThree from "../Assets/pexels-tree-of-life-seeds-1708680-3259600.jpg";
+import Footer from "./Footer";
 
 export default function HeroSection() {
   return (
@@ -11,7 +12,7 @@ export default function HeroSection() {
           <div className="row">
             <div className="col-2 d-none d-md-block">
               <motion.div
-              style={{marginTop:"40px"}}
+              style={{margin:"40px 0px"}}
                 className="h-100"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -47,7 +48,7 @@ export default function HeroSection() {
             <div className="col-xl-10 col-12">
               <div
                 id="carouselExample"
-                style={{ marginTop: "40px" }}
+                style={{ margin: "40px 0px" }}
                 className="carousel slide"
               >
                 <div className="carousel-inner">
@@ -105,6 +106,7 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 }

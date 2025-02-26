@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import MainNav from "../Component/MainNav";
+import Footer from "../Component/Footer";
 
 export default function NotFound() {
   const Nav = useNavigate();
@@ -65,6 +66,7 @@ export default function NotFound() {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 }
