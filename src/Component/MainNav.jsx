@@ -48,6 +48,7 @@ export default function MainNav() {
                   Sign Up
                 </Link>
               </li>
+              
             </ul>
             <ul className="navbar-nav-two d-flex align-items-center gap-3">
               <li className="nav-item">
