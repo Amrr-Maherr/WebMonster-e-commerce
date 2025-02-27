@@ -39,7 +39,7 @@ export default function Contact() {
       >
         <div className="container">
           <div className="row">
-            <motion.div className="col-xl-4" variants={slideInLeft}>
+            <motion.div className="col-xl-5" variants={slideInLeft}>
               <div
                 className="d-flex align-items-center justify-content-center"
                 style={{
@@ -116,7 +116,7 @@ export default function Contact() {
               </div>
             </motion.div>
             <motion.div
-              className="col-xl-8 "
+              className="col-xl-7"
               style={{ padding: "30px 0px" }}
               variants={slideInRight}
             >
