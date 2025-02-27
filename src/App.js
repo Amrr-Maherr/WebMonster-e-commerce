@@ -7,6 +7,7 @@ import Home from './Pages/Home';
 import NotFound from './Pages/NotFound';
 import Login from './Pages/Authentication/Login';
 import SignUp from './Pages/Authentication/SignUp';
+import About from './Pages/About';
 function App() {
   return (
     <>
@@ -17,6 +18,7 @@ function App() {
             <Route path='*' element={<NotFound/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<SignUp/>}/>
+            <Route path='/about' element={<About/>}/>
           </Routes>
         </div>
       </BrowserRouter>
