@@ -5,6 +5,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Pages/Home';
 import NotFound from './Pages/NotFound';
+import Login from './Pages/Authentication/Login';
 function App() {
   return (
     <>
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='*' element={<NotFound/>}/>
+            <Route path='/login' element={<Login/>}/>
           </Routes>
         </div>
       </BrowserRouter>
