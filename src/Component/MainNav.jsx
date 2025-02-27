@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import SubNav from "../Component/SubNav"
+import SubNav from "../Component/SubNav";
 import "../Style/MainNav.css";
 
 export default function MainNav() {
   return (
     <>
-      <SubNav/>
+      <SubNav />
       <motion.nav
         className="navbar navbar-expand-lg border-bottom py-3"
         initial={{ opacity: 0, y: -50 }}
@@ -59,10 +59,27 @@ export default function MainNav() {
               </li>
               <ul className="list-unstyled d-flex gap-3 m-0">
                 <li className="nav-item">
-                  <i className="fas fa-heart"></i>
+                  <Link to="/fav" className="text-danger">
+                    <i className="fas fa-heart"></i>
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <i className="fas fa-shopping-cart"></i>
+                  <Link to="/cart" style={{color:'black'}}>
+                    <i className="fas fa-shopping-cart"></i>
+                  </Link>
+                </li>
+                <li
+                  className="nav-item d-flex align-items-center justify-content-center"
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    backgroundColor: "#DB4444",
+                    borderRadius:"50%",
+                  }}
+                >
+                  <Link to="/profile" style={{color:'white'}}>
+                    <i className="fas fa-user"></i> {/* أيقونة البروفايل */}
+                  </Link>
                 </li>
               </ul>
             </ul>
