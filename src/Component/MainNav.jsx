@@ -78,7 +78,7 @@ export default function MainNav() {
                     borderRadius:"50%",
                   }}
                 >
-                  <Link  style={{color:'white'}}>
+                  <Link to="/profile" style={{color:'white'}}>
                     <i className="fas fa-user"></i> {/* أيقونة البروفايل */}
                   </Link>
                 </li>

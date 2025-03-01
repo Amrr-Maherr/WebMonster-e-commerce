@@ -9,6 +9,7 @@ import Login from './Pages/Authentication/Login';
 import SignUp from './Pages/Authentication/SignUp';
 import About from './Pages/About';
 import Contact from './Pages/Contact';
+import Profile from './Pages/Profile';
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
             <Route path='/signup' element={<SignUp/>}/>
             <Route path='/about' element={<About/>}/>
             <Route path='/contact' element={<Contact/>}/>
+            <Route path='/profile' element={<Profile/>}/>
           </Routes>
         </div>
       </BrowserRouter>
