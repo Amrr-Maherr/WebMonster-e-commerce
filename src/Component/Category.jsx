@@ -163,7 +163,7 @@ export default function Category() {
                 border: "1px solid rgba(0, 0, 0, 0.3)",
                 borderRadius: "4px",
                 cursor: "pointer",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", // ظل افتراضي
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", 
               }}
               variants={boxVariants}
               whileHover="hover"
