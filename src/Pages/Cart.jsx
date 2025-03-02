@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
+import { useNavigate } from "react-router-dom";
 
 function Cart() {
+  const nav = useNavigate();
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -33,6 +35,27 @@ function Cart() {
     setCartItems(cartItems.filter((item) => item.id !== itemId));
   };
 
+  const updateQuantity = (itemId, newQuantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const increaseQuantity = (itemId) => {
+    const item = cartItems.find((item) => item.id === itemId);
+    updateQuantity(itemId, item.quantity + 1);
+  };
+
+  const decreaseQuantity = (itemId) => {
+    const item = cartItems.find((item) => item.id === itemId);
+    if (item.quantity > 1) {
+      // منع الكمية من أن تصبح أقل من 1
+      updateQuantity(itemId, item.quantity - 1);
+    }
+  };
+
   const productCardStyle = {
     transition: "transform 0.2s ease-in-out",
   };
@@ -49,6 +72,23 @@ function Cart() {
 
   const removeFavoriteBtnHoverStyle = {
     backgroundColor: "#f8f9fa",
+  };
+
+  const quantityBtnStyle = {
+    padding: "0.2rem 0.5rem",
+    fontSize: "0.8rem",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "rgba(219, 68, 68, 1)", // لون الخلفية المطلوب
+    color: "white", // لون النص الأبيض
+    cursor: "pointer",
+    lineHeight: 1, // إضافة هذه الخاصية لتحسين محاذاة الأيقونات
+  };
+
+  const checkoutButtonStyle = {
+    backgroundColor: "rgba(219, 68, 68, 1)", // لون الخلفية المطلوب
+    color: "white", // لون النص الأبيض
+    border: "none",
   };
 
   return (
@@ -101,7 +141,25 @@ function Cart() {
                           </div>
                         </td>
                         <td>${item.price}</td>
-                        <td>{item.quantity}</td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <button
+                              style={quantityBtnStyle}
+                              onClick={() => decreaseQuantity(item.id)}
+                            >
+                              <i className="fas fa-minus"></i>{" "}
+                              {/* أيقونة ناقص */}
+                            </button>
+                            <span className="mx-2">{item.quantity}</span>
+                            <button
+                              style={quantityBtnStyle}
+                              onClick={() => increaseQuantity(item.id)}
+                            >
+                              <i className="fas fa-plus"></i>{" "}
+                              {/* أيقونة زائد */}
+                            </button>
+                          </div>
+                        </td>
                         <td>${item.price * item.quantity}</td>
                         <td>
                           <button
@@ -131,7 +189,13 @@ function Cart() {
             <h5 className="mb-0 text-muted">
               Total: <span className="text-dark">${calculateTotal()}</span>
             </h5>
-            <button className="btn btn-outline-primary">
+            <button
+              onClick={() => {
+                nav("/check-out");
+              }}
+              className="btn"
+              style={checkoutButtonStyle}
+            >
               <i className="bi bi-check-circle me-2"></i>
               Checkout
             </button>

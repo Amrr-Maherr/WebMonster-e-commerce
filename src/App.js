@@ -13,6 +13,8 @@ import Profile from './Pages/Profile';
 import ProductDetails from './Pages/ProductDetails';
 import Cart from './Pages/Cart';
 import Favorites from './Pages/Favorites';
+import Checkout from './Pages/Checkout';
+import ThankYou from './Pages/ThankYou';
 function App() {
   return (
     <>
@@ -29,6 +31,8 @@ function App() {
             <Route path='/product-details' element={<ProductDetails/>}/>
             <Route path='/cart' element={<Cart/>}/>
             <Route path='/favorite' element={<Favorites/>}/>
+            <Route path='/check-out' element={<Checkout/>}/>
+            <Route path='/thank-you' element={<ThankYou/>}/>
           </Routes>
         </div>
       </BrowserRouter>
