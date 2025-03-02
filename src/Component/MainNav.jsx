@@ -48,7 +48,6 @@ export default function MainNav() {
                   Sign Up
                 </Link>
               </li>
-
             </ul>
             <ul className="navbar-nav-two d-flex align-items-center gap-3">
               <li className="nav-item">
@@ -60,12 +59,12 @@ export default function MainNav() {
               </li>
               <ul className="list-unstyled d-flex gap-3 m-0">
                 <li className="nav-item">
-                  <Link  className="text-danger">
+                  <Link to="/favorite" className="text-danger">
                     <i className="fas fa-heart"></i>
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link  style={{color:'black'}}>
+                  <Link to="/cart" style={{ color: "black" }}>
                     <i className="fas fa-shopping-cart"></i>
                   </Link>
                 </li>
@@ -75,10 +74,10 @@ export default function MainNav() {
                     width: "32px",
                     height: "32px",
                     backgroundColor: "#DB4444",
-                    borderRadius:"50%",
+                    borderRadius: "50%",
                   }}
                 >
-                  <Link to="/profile" style={{color:'white'}}>
+                  <Link to="/profile" style={{ color: "white" }}>
                     <i className="fas fa-user"></i> {/* أيقونة البروفايل */}
                   </Link>
                 </li>

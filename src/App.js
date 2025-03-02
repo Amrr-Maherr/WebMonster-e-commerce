@@ -10,6 +10,9 @@ import SignUp from './Pages/Authentication/SignUp';
 import About from './Pages/About';
 import Contact from './Pages/Contact';
 import Profile from './Pages/Profile';
+import ProductDetails from './Pages/ProductDetails';
+import Cart from './Pages/Cart';
+import Favorites from './Pages/Favorites';
 function App() {
   return (
     <>
@@ -23,6 +26,9 @@ function App() {
             <Route path='/about' element={<About/>}/>
             <Route path='/contact' element={<Contact/>}/>
             <Route path='/profile' element={<Profile/>}/>
+            <Route path='/product-details' element={<ProductDetails/>}/>
+            <Route path='/cart' element={<Cart/>}/>
+            <Route path='/favorite' element={<Favorites/>}/>
           </Routes>
         </div>
       </BrowserRouter>
