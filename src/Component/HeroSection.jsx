@@ -3,10 +3,13 @@ import proOne from "../Assets/pexels-huy-phan-316220-2015876.jpg";
 import proTwo from "../Assets/pexels-polina-tankilevitch-4440525.jpg";
 import proThree from "../Assets/pexels-tree-of-life-seeds-1708680-3259600.jpg";
 import Footer from "./Footer";
+import MainNav from "./MainNav";
+import Category from "./Category";
 
 export default function HeroSection() {
   return (
     <>
+      <MainNav/>
       <section>
         <div className="container">
           <div className="row">
@@ -106,6 +109,7 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
+      <Category/>
       <Footer/>
     </>
   );
