@@ -70,8 +70,6 @@ export default function Category() {
             </div>
           </div>
         </div>
-
-        {/* تصفح حسب الفئة وأزرار التنقل */}
         <div className="row" style={{ marginBottom: "60px" }}>
           <div className="col-6">
             <h4 style={{ fontSize: "36px", fontWeight: "600" }}>

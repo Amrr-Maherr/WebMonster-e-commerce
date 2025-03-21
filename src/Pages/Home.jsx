@@ -1,3 +1,4 @@
+import Ad from "../Component/Ad";
 import Footer from "../Component/Footer";
 import HeroSection from "../Component/HeroSection";
 import MainNav from "../Component/MainNav";
@@ -9,6 +10,7 @@ export default function Home() {
         <MainNav />
         <HeroSection />
         <HomeProducts />
+        <Ad/>
         <Footer />
       </>
     );
