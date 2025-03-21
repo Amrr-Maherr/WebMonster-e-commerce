@@ -7,6 +7,7 @@ export default function Ad() {
       <div
         className="container h-100 my-5 d-flex justify-content-center align-items-center" 
         style={{
+            width:"100%",
           backgroundImage: `url(${Img})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
