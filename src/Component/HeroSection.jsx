@@ -9,7 +9,7 @@ import Category from "./Category";
 export default function HeroSection() {
   return (
     <>
-      <MainNav/>
+      
       <section>
         <div className="container">
           <div className="row">
@@ -110,7 +110,7 @@ export default function HeroSection() {
         </div>
       </section>
       <Category/>
-      <Footer/>
+      
     </>
   );
 }
