@@ -1,28 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 import { useNavigate } from "react-router-dom";
 
 function Cart() {
   const nav = useNavigate();
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Elegant Watch",
-      price: 150,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1524592094714-0f0668299c7d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTh8fHdhdGNofGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    },
-    {
-      id: 2,
-      name: "Leather Wallet",
-      price: 60,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1612295897834-ef35d399912f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8d2FsbGV0fGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    },
-  ]);
+  const [cartItems, setCartItems] = useState([]);
+
+  // ✅ تحميل البيانات من localStorage عند أول تحميل
+  useEffect(() => {
+    const storedCart = JSON.parse(localStorage.getItem("cart"));
+    const cartWithQuantities = storedCart.map((item) => ({
+      ...item,
+      quantity: item.quantity || 1, 
+    }));
+    setCartItems(cartWithQuantities);
+  }, []);
+
 
   const calculateTotal = () => {
     return cartItems.reduce(
@@ -51,18 +45,19 @@ function Cart() {
   const decreaseQuantity = (itemId) => {
     const item = cartItems.find((item) => item.id === itemId);
     if (item.quantity > 1) {
-      // منع الكمية من أن تصبح أقل من 1
       updateQuantity(itemId, item.quantity - 1);
     }
   };
 
-  const productCardStyle = {
-    transition: "transform 0.2s ease-in-out",
-  };
-
-  const productCardHoverStyle = {
-    transform: "translateY(-5px)",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  const quantityBtnStyle = {
+    padding: "0.2rem 0.5rem",
+    fontSize: "0.8rem",
+    borderRadius: "50%",
+    border: "none",
+    backgroundColor: "rgba(219, 68, 68, 1)",
+    color: "white",
+    cursor: "pointer",
+    lineHeight: 1,
   };
 
   const removeFavoriteBtnStyle = {
@@ -74,20 +69,9 @@ function Cart() {
     backgroundColor: "#f8f9fa",
   };
 
-  const quantityBtnStyle = {
-    padding: "0.2rem 0.5rem",
-    fontSize: "0.8rem",
-    borderRadius: "50%",
-    border: "none",
-    backgroundColor: "rgba(219, 68, 68, 1)", // لون الخلفية المطلوب
-    color: "white", // لون النص الأبيض
-    cursor: "pointer",
-    lineHeight: 1, // إضافة هذه الخاصية لتحسين محاذاة الأيقونات
-  };
-
   const checkoutButtonStyle = {
-    backgroundColor: "rgba(219, 68, 68, 1)", // لون الخلفية المطلوب
-    color: "white", // لون النص الأبيض
+    backgroundColor: "rgba(219, 68, 68, 1)",
+    color: "white",
     border: "none",
   };
 
@@ -126,7 +110,7 @@ function Cart() {
                         <td>
                           <div className="d-flex align-items-center">
                             <img
-                              src={item.image}
+                              src={item.image || item.photo} // دعم الحقول القديمة والجديدة
                               alt={item.name}
                               style={{
                                 width: "80px",
@@ -147,16 +131,14 @@ function Cart() {
                               style={quantityBtnStyle}
                               onClick={() => decreaseQuantity(item.id)}
                             >
-                              <i className="fas fa-minus"></i>{" "}
-                              {/* أيقونة ناقص */}
+                              <i className="fas fa-minus"></i>
                             </button>
                             <span className="mx-2">{item.quantity}</span>
                             <button
                               style={quantityBtnStyle}
                               onClick={() => increaseQuantity(item.id)}
                             >
-                              <i className="fas fa-plus"></i>{" "}
-                              {/* أيقونة زائد */}
+                              <i className="fas fa-plus"></i>
                             </button>
                           </div>
                         </td>

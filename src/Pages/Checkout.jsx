@@ -1,38 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 
 const Checkout = () => {
-  // البيانات الوهمية للمنتجات
-  const products = [
-    {
-      id: 1,
-      name: "Slim Fit Jeans",
-      price: 39.99,
-      quantity: 1,
-      image: "https://fakestoreapi.com/img/71pWzhdJNwL._AC_UL640_QL65_ML3_.jpg", // صورة وهمية
-    },
-    {
-      id: 2,
-      name: "Casual T-Shirt",
-      price: 19.99,
-      quantity: 2,
-      image: "https://fakestoreapi.com/img/61pHSquWqvL._AC_UL640_QL65_ML3_.jpg", // صورة وهمية
-    },
-    {
-      id: 3,
-      name: "Leather Jacket",
-      price: 129.99,
-      quantity: 1,
-      image: "https://fakestoreapi.com/img/71Hkg0pVvlL._AC_SY340_.jpg", // صورة وهمية
-    },
-  ];
+  // الحالة للاحتفاظ بالمنتجات
+  const [products, setProducts] = useState([]);
 
+  useEffect(() => {
+    // جلب البيانات من localStorage
+    const cartData = localStorage.getItem("cart");
+    if (cartData) {
+      try {
+        const parsed = JSON.parse(cartData);
+
+        // تحويل البيانات حسب التنسيق المطلوب
+        const formattedProducts = parsed.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: parseFloat(item.price.replace("$", "")), // نحول السعر لنوع رقم
+          quantity: 1, // ممكن تعدل لو عندك كمية
+          image: item.photo, // استخدم خاصية photo
+          title: item.title,
+          discount: item.discount,
+          rate: item.rate,
+        }));
+        setProducts(formattedProducts);
+      } catch (e) {
+        console.error("Error parsing cart data:", e);
+      }
+    }
+  }, []);
+
+  // الأنماط inline كما طلبت
   const containerStyle = {
-    fontFamily: '"Open Sans", sans-serif', // استبدل بخط DeFacto الفعلي
-    backgroundColor: "#f8f9fa", // رمادي فاتح جدًا
+    fontFamily: '"Open Sans", sans-serif',
+    backgroundColor: "#f8f9fa",
     padding: "20px",
-    minHeight: "100vh", // اجعل الكونتينر يغطي الشاشة بالكامل
+    minHeight: "100vh",
   };
 
   const cardStyle = {
@@ -40,19 +44,19 @@ const Checkout = () => {
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     marginBottom: "20px",
-    border: "1px solid #e9ecef", // رمادي فاتح
+    border: "1px solid #e9ecef",
   };
 
   const cardHeaderStyle = {
-    backgroundColor: "#fff", // أبيض
+    backgroundColor: "#fff",
     padding: "15px",
-    borderBottom: "1px solid #e9ecef", // رمادي فاتح
+    borderBottom: "1px solid #e9ecef",
   };
 
   const cardTitleStyle = {
     fontSize: "1.2rem",
     fontWeight: "600",
-    color: "#343a40", // رمادي داكن
+    color: "#343a40",
     margin: 0,
   };
 
@@ -152,7 +156,7 @@ const Checkout = () => {
   };
 
   const checkoutButtonStyle = {
-    backgroundColor: "rgba(219, 68, 68, 1)", // أحمر DeFacto
+    backgroundColor: "rgba(219, 68, 68, 1)",
     color: "white",
     border: "none",
     borderRadius: "4px",
@@ -176,7 +180,6 @@ const Checkout = () => {
     marginRight: "8px",
   };
 
-  // أنماط إضافية لخيارات الدفع
   const paymentOptionsStyle = {
     padding: "15px",
   };
@@ -193,18 +196,18 @@ const Checkout = () => {
     color: "#495057",
   };
 
-  // حساب المجموع الفرعي
+  // حساب المجموع الفرعي بناء على المنتجات من localStorage
   const subtotal = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
   );
-  const shippingCost = 5.0; // تكلفة شحن وهمية
-  const discount = 2.0; // خصم وهمي
+  const shippingCost = 5.0;
+  const discount = 2.0;
   const total = subtotal + shippingCost - discount;
 
   return (
-      <>
-          <MainNav/>
+    <>
+      <MainNav />
       <div style={containerStyle}>
         <div className="container">
           <div className="row">
@@ -218,24 +221,28 @@ const Checkout = () => {
                   </h5>
                 </div>
                 <div style={productListStyle}>
-                  {products.map((product) => (
-                    <div style={productItemStyle} key={product.id}>
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        style={productImageStyle}
-                      />
-                      <div style={productInfoStyle}>
-                        <h6 style={productNameStyle}>{product.name}</h6>
-                        <p style={productQuantityStyle}>
-                          Quantity: {product.quantity}
-                        </p>
-                        <p style={productPriceStyle}>
-                          ${product.price.toFixed(2)}
-                        </p>
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <div style={productItemStyle} key={product.id}>
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          style={productImageStyle}
+                        />
+                        <div style={productInfoStyle}>
+                          <h6 style={productNameStyle}>{product.name}</h6>
+                          <p style={productQuantityStyle}>
+                            Quantity: {product.quantity}
+                          </p>
+                          <p style={productPriceStyle}>
+                            ${product.price.toFixed(2)}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <p>Your cart is empty.</p>
+                  )}
                 </div>
               </div>
 
@@ -266,7 +273,7 @@ const Checkout = () => {
                       placeholder="Your Address"
                     />
                   </div>
-                  {/* المزيد من حقول النموذج */}
+                  {/* المزيد من الحقول حسب الحاجة */}
                 </div>
               </div>
 
@@ -344,8 +351,8 @@ const Checkout = () => {
             </div>
           </div>
         </div>
-          </div>
-          <Footer/>
+      </div>
+      <Footer />
     </>
   );
 };

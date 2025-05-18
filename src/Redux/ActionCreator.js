@@ -4,7 +4,9 @@ import { GET_ALL_DATA } from "./Actions";
 const fetchData = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get("https://fakestoreapi.com/products");
+      const response = await axios.get(
+        "https://my-api-production-3918.up.railway.app/admin/allproduct"
+      );
       dispatch({
         type: GET_ALL_DATA,
         payload: response.data,

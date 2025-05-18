@@ -13,7 +13,10 @@ export default function HomeProducts() {
     dispatch(fetchData());
   }, [dispatch]);
 
-  console.log(products);
+  const extractDriveId = (url) => {
+    const match = url.match(/\/d\/([^/]+)\//);
+    return match ? match[1] : "";
+  };
 
   const navButtonStyle = {
     width: "46px",
@@ -45,67 +48,94 @@ export default function HomeProducts() {
   };
 
   return (
-    <>
-      <section>
-        <div className="container my-5">
-          {/* عنوان القسم */}
-          <div className="row" style={{ marginBottom: "20px" }}>
-            <div className="col-12">
-              <div className="d-flex align-items-center gap-4">
-                <div
-                  style={{
-                    width: "20px",
-                    height: "40px",
-                    borderRadius: "4px",
-                    backgroundColor: "rgba(219, 68, 68, 1)",
-                  }}
-                ></div>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "rgba(219, 68, 68, 1)",
-                  }}
-                  className="p-0 m-0"
-                >
-                  Today’s
-                </p>
-              </div>
+    <section>
+      <div className="container my-5">
+        {/* عنوان القسم */}
+        <div className="row mb-4">
+          <div className="col-12">
+            <div className="d-flex align-items-center gap-4">
+              <div
+                style={{
+                  width: "20px",
+                  height: "40px",
+                  borderRadius: "4px",
+                  backgroundColor: "rgba(219, 68, 68, 1)",
+                }}
+              ></div>
+              <p
+                style={{
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  color: "rgba(219, 68, 68, 1)",
+                }}
+                className="p-0 m-0"
+              >
+                Today’s
+              </p>
             </div>
           </div>
-          <div className="row" style={{ marginBottom: "60px" }}>
-            <div className="col-6">
-              <h4 style={{ fontSize: "36px", fontWeight: "600" }}>
-                Flash Sales
-              </h4>
-            </div>
-            <div className="col-6  d-flex gap-3 justify-content-end">
-              <motion.button
-                style={navButtonStyle}
-                variants={navButtonVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <i className="fas fa-chevron-right"></i> {/* أيقونة لليمين */}
-              </motion.button>
-              <motion.button
-                style={navButtonStyle}
-                variants={navButtonVariants}
-                whileHover="hover"
-                whileTap="tap"
-              >
-                <i className="fas fa-chevron-left"></i>
-              </motion.button>
-            </div>
+        </div>
+
+        <div className="row mb-5">
+          <div className="col-6">
+            <h4 style={{ fontSize: "36px", fontWeight: "600" }}>Flash Sales</h4>
           </div>
-          <div className="row">
-            <Marquee speed={40} pauseOnHover={true}>
-              {products.map((product) => (
+          <div className="col-6 d-flex gap-3 justify-content-end">
+            <motion.button
+              style={navButtonStyle}
+              variants={navButtonVariants}
+              whileHover="hover"
+              whileTap="tap"
+            >
+              <i className="fas fa-chevron-right"></i>
+            </motion.button>
+            <motion.button
+              style={navButtonStyle}
+              variants={navButtonVariants}
+              whileHover="hover"
+              whileTap="tap"
+            >
+              <i className="fas fa-chevron-left"></i>
+            </motion.button>
+          </div>
+        </div>
+
+        <div className="row">
+          <Marquee speed={40} pauseOnHover={true}>
+            {products.map((product) => {
+              const extractImageId = (url) => {
+                const match = url.match(/\/d\/(.*?)\//);
+                return match ? match[1] : "";
+              };
+
+              const imageId = extractImageId(product.photo);
+              const imageUrl = `https://drive.google.com/uc?export=view&id=${imageId}`;
+
+              // ✅ فنكشن الإضافة للكارت
+              const handleAddToCart = (item) => {
+                const existingCart =
+                  JSON.parse(localStorage.getItem("cart")) || [];
+
+                // تحقق إذا كان المنتج موجود مسبقًا (اختياري)
+                const isAlreadyInCart = existingCart.some(
+                  (p) => p.id === item.id
+                );
+                if (isAlreadyInCart) {
+                  alert("المنتج موجود بالفعل في السلة");
+                  return;
+                }
+
+                const updatedCart = [...existingCart, item];
+                localStorage.setItem("cart", JSON.stringify(updatedCart));
+                alert("تم إضافة المنتج إلى السلة");
+              };
+
+              return (
                 <div key={product.id} className="mx-3">
                   <div className="card relative" style={{ width: "18rem" }}>
                     <div className="absolute top-0 left-0 p-2 d-flex justify-content-between w-100">
                       <div className="bg-danger p-1 rounded text-white">
-                        Offer 50%
+                        Offer {product.discount}
                       </div>
                       <div className="d-flex gap-2">
                         <i className="far fa-heart"></i>
@@ -114,19 +144,25 @@ export default function HomeProducts() {
                     </div>
 
                     <img
-                      src={product.image}
+                      src={imageUrl}
                       alt={product.title}
                       className="card-img-top"
                       style={{ height: "200px", objectFit: "contain" }}
                     />
                     <div className="card-body">
-                      <h5 className="card-title">
-                        {product.title.slice(0, 20)}
-                      </h5>
-                      <p className="card-text">
-                        {product.description.substring(0, 15)}...
+                      <h5 className="card-title">{product.title}</h5>
+                      <p className="card-text mb-1">{product.name}</p>
+                      <p className="card-text mb-1">
+                        <strong>Price:</strong> {product.price}
+                      </p>
+                      <p className="card-text mb-1">
+                        <strong>Discount:</strong> {product.discount}
+                      </p>
+                      <p className="card-text mb-1">
+                        <strong>Rate:</strong> {product.rate} ⭐
                       </p>
                       <button
+                        onClick={() => handleAddToCart(product)}
                         style={{
                           width: "100%",
                           height: "41px",
@@ -139,29 +175,30 @@ export default function HomeProducts() {
                     </div>
                   </div>
                 </div>
-              ))}
-            </Marquee>
-          </div>
-          <div className="row" style={{ marginTop: "60px" }}>
-            <div className="col-12 text-center">
-              <button
-                style={{
-                  width: "234px",
-                  height: "56px",
-                  borderRadius: "4px",
-                  backgroundColor: "rgba(219, 68, 68, 1)",
-                  border: "none",
-                  fontSize: "16px",
-                  fontWeight: "500",
-                  color:"white"
-                }}
-              >
-                View All Products
-              </button>
-            </div>
+              );
+            })}
+          </Marquee>
+        </div>
+
+        <div className="row mt-5">
+          <div className="col-12 text-center">
+            <button
+              style={{
+                width: "234px",
+                height: "56px",
+                borderRadius: "4px",
+                backgroundColor: "rgba(219, 68, 68, 1)",
+                border: "none",
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "white",
+              }}
+            >
+              View All Products
+            </button>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
