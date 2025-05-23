@@ -110,7 +110,7 @@ function Cart() {
                         <td>
                           <div className="d-flex align-items-center">
                             <img
-                              src={item.image || item.photo} // دعم الحقول القديمة والجديدة
+                              src={item.photo}
                               alt={item.name}
                               style={{
                                 width: "80px",
