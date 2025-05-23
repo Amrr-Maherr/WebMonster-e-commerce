@@ -14,7 +14,7 @@ export default function MainNav() {
         transition={{ duration: 0.5 }}
       >
         <div className="container-fluid">
-          <p className="navbar-brand">Exclusive</p>
+          <p className="navbar-brand">Box&Buy</p>
           <button
             className="navbar-toggler"
             type="button"
@@ -50,13 +50,13 @@ export default function MainNav() {
               </li>
             </ul>
             <ul className="navbar-nav-two d-flex align-items-center gap-3">
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <input
                   type="search"
                   className="form-control"
                   placeholder="Search..."
                 />
-              </li>
+              </li> */}
               <ul className="list-unstyled d-flex gap-3 m-0">
                 <li className="nav-item">
                   <Link to="/favorite" className="text-danger">

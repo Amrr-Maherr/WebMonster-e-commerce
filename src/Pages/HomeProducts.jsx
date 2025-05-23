@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import fetchData from "../Redux/ActionCreator";
-
 export default function HomeProducts() {
   const products = useSelector((state) => state.ShopReducer);
   const dispatch = useDispatch();
@@ -12,11 +11,7 @@ export default function HomeProducts() {
   useEffect(() => {
     dispatch(fetchData());
   }, [dispatch]);
-
-  const extractDriveId = (url) => {
-    const match = url.match(/\/d\/([^/]+)\//);
-    return match ? match[1] : "";
-  };
+;
 
   const navButtonStyle = {
     width: "46px",
@@ -108,9 +103,6 @@ export default function HomeProducts() {
                 return match ? match[1] : "";
               };
 
-              const imageId = extractImageId(product.photo);
-              const imageUrl = `https://drive.google.com/uc?export=view&id=${imageId}`;
-
               // ✅ فنكشن الإضافة للكارت
               const handleAddToCart = (item) => {
                 const existingCart =
@@ -144,10 +136,10 @@ export default function HomeProducts() {
                     </div>
 
                     <img
-                      src={imageUrl}
+                      src={product.photo}
                       alt={product.title}
                       className="card-img-top"
-                      style={{ height: "200px", objectFit: "contain" }}
+                      style={{ height: "200px", objectFit: "cover" }}
                     />
                     <div className="card-body">
                       <h5 className="card-title">{product.title}</h5>

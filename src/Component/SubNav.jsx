@@ -19,7 +19,7 @@ export default function SubNav() {
           </a>
         </div>
         <div className="subnav-select">
-          <select
+          {/* <select
             name="language"
             id="language-select"
             className="subnav-language"
@@ -27,7 +27,7 @@ export default function SubNav() {
             <option value="ar">Arabic</option>
             <option value="en">English</option>
             <option value="fr">French</option>
-          </select>
+          </select> */}
         </div>
       </nav>
     </motion.header>
