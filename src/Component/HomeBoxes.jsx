@@ -1,148 +1,115 @@
 import React from "react";
 
 export default function HomeBoxes() {
-  const style1 = {
-    width: "80px",
-    height: "80px",
+  const outerCircle = {
+    width: "90px",
+    height: "90px",
     borderRadius: "50%",
-    backgroundColor: "#2F2E30",
-    marginBottom: "10px",
+    background: "linear-gradient(135deg, #2F2E30 60%, #444 100%)",
+    marginBottom: "16px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
   };
 
-  const style2 = {
-    width: "58px",
-    height: "58px",
+  const innerCircle = {
+    width: "60px",
+    height: "60px",
     borderRadius: "50%",
-    backgroundColor: "#000000",
+    background: "linear-gradient(135deg, #000 60%, #444 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+  };
+
+  const boxStyle = {
+    background: "#fff",
+    borderRadius: "18px",
+    boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
+    padding: "32px 18px 24px 18px",
+    margin: "18px 0",
+    minHeight: "320px",
+    transition: "transform 0.2s",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  };
+
+  const titleStyle = {
+    fontFamily: "Poppins",
+    fontWeight: "700",
+    fontSize: "21px",
+    lineHeight: "30px",
+    marginBottom: "8px",
+    color: "#2F2E30",
+    letterSpacing: "0.5px",
+  };
+
+  const descStyle = {
+    fontFamily: "Poppins",
+    fontWeight: "400",
+    fontSize: "15px",
+    lineHeight: "22px",
+    color: "#555",
+    margin: 0,
   };
 
   return (
-    <>
-      <section style={{ margin: "140px" }}>
-        <div className="container">
-          <div className="row d-flex justify-content-center align-items-center bg-drk text-center">
-            {/* القسم الأول */}
-            <div className="col-xl-4 col-md-6 col-12 d-flex flex-column align-items-center">
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={style1}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={style2}
-                >
-                  {/* أيقونة التوصيل */}
+    <section style={{ margin: "80px 0" }}>
+      <div className="container">
+        <div className="row d-flex justify-content-center align-items-center text-center g-4">
+          {/* القسم الأول */}
+          <div className="col-xl-4 col-md-6 col-12 d-flex">
+            <div style={boxStyle} className="w-100 h-100">
+              <div style={outerCircle}>
+                <div style={innerCircle}>
                   <i
                     className="fas fa-truck-moving"
-                    style={{ color: "#fff", fontSize: "30px" }}
+                    style={{ color: "#fff", fontSize: "32px" }}
                   ></i>
                 </div>
               </div>
-              <div>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "600",
-                    fontSize: "20px",
-                    lineHeight: "28px",
-                  }}
-                >
-                  FREE AND FAST DELIVERY
-                </p>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    lineHeight: "21px",
-                  }}
-                >
-                  Free delivery for all orders over $140
-                </p>
-              </div>
+              <p style={titleStyle}>FREE AND FAST DELIVERY</p>
+              <p style={descStyle}>Free delivery for all orders over $140</p>
             </div>
+          </div>
 
-            {/* القسم الثاني */}
-            <div className="col-xl-4 col-md-6 col-12 d-flex flex-column align-items-center">
-              <div className="d-flex justify-content-center align-items-center">
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={style2}
-                >
-                  {/* أيقونة الدعم */}
+          {/* القسم الثاني */}
+          <div className="col-xl-4 col-md-6 col-12 d-flex">
+            <div style={boxStyle} className="w-100 h-100">
+              <div style={outerCircle}>
+                <div style={innerCircle}>
                   <i
                     className="fas fa-headset"
-                    style={{ color: "#fff", fontSize: "30px" }}
+                    style={{ color: "#fff", fontSize: "32px" }}
                   ></i>
                 </div>
               </div>
-              <div>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "600",
-                    fontSize: "20px",
-                    lineHeight: "28px",
-                  }}
-                >
-                  24/7 CUSTOMER SERVICE
-                </p>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    lineHeight: "21px",
-                  }}
-                >
-                  Friendly 24/7 customer support
-                </p>
-              </div>
+              <p style={titleStyle}>24/7 CUSTOMER SERVICE</p>
+              <p style={descStyle}>Friendly 24/7 customer support</p>
             </div>
+          </div>
 
-            {/* القسم الثالث */}
-            <div className="col-xl-4 col-md-6 col-12 d-flex flex-column align-items-center">
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={style1}
-              >
-                <div
-                  className="d-flex justify-content-center align-items-center"
-                  style={style2}
-                >
-                  {/* أيقونة الأمان */}
+          {/* القسم الثالث */}
+          <div className="col-xl-4 col-md-6 col-12 d-flex">
+            <div style={boxStyle} className="w-100 h-100">
+              <div style={outerCircle}>
+                <div style={innerCircle}>
                   <i
                     className="fas fa-lock"
-                    style={{ color: "#fff", fontSize: "30px" }}
+                    style={{ color: "#fff", fontSize: "32px" }}
                   ></i>
                 </div>
               </div>
-              <div>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "600",
-                    fontSize: "20px",
-                    lineHeight: "28px",
-                  }}
-                >
-                  SECURE PAYMENT
-                </p>
-                <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontWeight: "400",
-                    fontSize: "14px",
-                    lineHeight: "21px",
-                  }}
-                >
-                  We return money within 30 days
-                </p>
-              </div>
+              <p style={titleStyle}>SECURE PAYMENT</p>
+              <p style={descStyle}>We return money within 30 days</p>
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

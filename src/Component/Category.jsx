@@ -73,26 +73,8 @@ export default function Category() {
         <div className="row" style={{ marginBottom: "60px" }}>
           <div className="col-6">
             <h4 style={{ fontSize: "36px", fontWeight: "600" }}>
-              Browse By Category
+              Browse By Food Category
             </h4>
-          </div>
-          <div className="col-6  d-flex gap-3 justify-content-end">
-            <motion.button
-              style={navButtonStyle}
-              variants={navButtonVariants}
-              whileHover="hover"
-              whileTap="tap"
-            >
-              <i className="fas fa-chevron-right"></i> {/* أيقونة لليمين */}
-            </motion.button>
-            <motion.button
-              style={navButtonStyle}
-              variants={navButtonVariants}
-              whileHover="hover"
-              whileTap="tap"
-            >
-              <i className="fas fa-chevron-left"></i> {/* أيقونة لليسار */}
-            </motion.button>
           </div>
         </div>
 
@@ -107,13 +89,13 @@ export default function Category() {
                 border: "1px solid rgba(0, 0, 0, 0.3)",
                 borderRadius: "4px",
                 cursor: "pointer",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", // ظل افتراضي
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
               }}
               variants={boxVariants}
               whileHover="hover"
             >
-              <i className="fas fa-microchip" style={{ fontSize: "30px" }}></i>
-              <p>Electronics</p>
+              <i className="fas fa-apple-alt" style={{ fontSize: "30px" }}></i>
+              <p>Fruits & Vegetables</p>
             </motion.div>
           </div>
           <div className="col-xl-3 col-md-4 col-12">
@@ -125,13 +107,16 @@ export default function Category() {
                 border: "1px solid rgba(0, 0, 0, 0.3)",
                 borderRadius: "4px",
                 cursor: "pointer",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", // ظل افتراضي
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
               }}
               variants={boxVariants}
               whileHover="hover"
             >
-              <i className="far fa-gem" style={{ fontSize: "30px" }}></i>
-              <p>Jewelery</p>
+              <i
+                className="fas fa-bread-slice"
+                style={{ fontSize: "30px" }}
+              ></i>
+              <p>Bakery</p>
             </motion.div>
           </div>
           <div className="col-xl-3 col-md-4 col-12">
@@ -143,13 +128,16 @@ export default function Category() {
                 border: "1px solid rgba(0, 0, 0, 0.3)",
                 borderRadius: "4px",
                 cursor: "pointer",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", // ظل افتراضي
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
               }}
               variants={boxVariants}
               whileHover="hover"
             >
-              <i className="fas fa-male" style={{ fontSize: "30px" }}></i>
-              <p>Men's Clothing</p>
+              <i
+                className="fas fa-drumstick-bite"
+                style={{ fontSize: "30px" }}
+              ></i>
+              <p>Meat & Poultry</p>
             </motion.div>
           </div>
           <div className="col-xl-3 col-md-4 col-12">
@@ -161,13 +149,13 @@ export default function Category() {
                 border: "1px solid rgba(0, 0, 0, 0.3)",
                 borderRadius: "4px",
                 cursor: "pointer",
-                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)", 
+                boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
               }}
               variants={boxVariants}
               whileHover="hover"
             >
-              <i className="fas fa-female" style={{ fontSize: "30px" }}></i>
-              <p>Women's Clothing</p>
+              <i className="fas fa-fish" style={{ fontSize: "30px" }}></i>
+              <p>Seafood</p>
             </motion.div>
           </div>
         </div>

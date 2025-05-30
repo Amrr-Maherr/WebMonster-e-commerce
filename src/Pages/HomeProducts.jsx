@@ -75,24 +75,6 @@ export default function HomeProducts() {
           <div className="col-6">
             <h4 style={{ fontSize: "36px", fontWeight: "600" }}>Flash Sales</h4>
           </div>
-          <div className="col-6 d-flex gap-3 justify-content-end">
-            <motion.button
-              style={navButtonStyle}
-              variants={navButtonVariants}
-              whileHover="hover"
-              whileTap="tap"
-            >
-              <i className="fas fa-chevron-right"></i>
-            </motion.button>
-            <motion.button
-              style={navButtonStyle}
-              variants={navButtonVariants}
-              whileHover="hover"
-              whileTap="tap"
-            >
-              <i className="fas fa-chevron-left"></i>
-            </motion.button>
-          </div>
         </div>
 
         <div className="row">
