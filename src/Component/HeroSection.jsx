@@ -9,74 +9,43 @@ import Category from "./Category";
 export default function HeroSection() {
   return (
     <>
-      
-      <section>
-        <div className="container">
-          <div className="row">
-            {/* <div className="col-2 d-none d-md-block">
-              <motion.div
-              style={{margin:"40px 0px"}}
-                className="h-100"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <ul className="list-group">
-                  {[
-                    "Electronics",
-                    "Fashion",
-                    "Home & Kitchen",
-                    "Beauty & Health",
-                    "Sports & Outdoors",
-                    "Toys & Games",
-                    "Automotive",
-                    "Books",
-                    "Groceries",
-                  ].map((category, index) => (
-                    <motion.li
-                      key={category}
-                      className="list-group-item border-0"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                    >
-                      <a href="#" className="text-decoration-none text-dark">
-                        {category}
-                      </a>
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div> */}
-            <div className="col-xl-12 col-12">
+      <section
+        style={{ width: "100%", height: "100vh", padding: 0, margin: 0 }}
+      >
+        <div className="container-fluid" style={{ height: "100%" }}>
+          <div className="row" style={{ height: "100%" }}>
+            <div className="col-12" style={{ height: "100%", padding: 0 }}>
               <div
                 id="carouselExample"
-                // style={{ margin: "40px 0px" }}
                 className="carousel slide"
+                style={{ height: "100%" }}
               >
-                <div className="carousel-inner">
-                  <div className="carousel-item active">
+                <div className="carousel-inner" style={{ height: "100%" }}>
+                  <div
+                    className="carousel-item active"
+                    style={{ height: "100%" }}
+                  >
                     <img
                       src={proOne}
                       className="d-block w-100"
                       alt="Slide 1"
-                      style={{ height: "400px", objectFit: "cover" }}
+                      style={{ height: "100vh", objectFit: "cover" }}
                     />
                   </div>
-                  <div className="carousel-item">
+                  <div className="carousel-item" style={{ height: "100%" }}>
                     <img
                       src={proTwo}
                       className="d-block w-100"
                       alt="Slide 2"
-                      style={{ height: "400px", objectFit: "cover" }}
+                      style={{ height: "100vh", objectFit: "cover" }}
                     />
                   </div>
-                  <div className="carousel-item">
+                  <div className="carousel-item" style={{ height: "100%" }}>
                     <img
                       src={proThree}
                       className="d-block w-100"
                       alt="Slide 3"
-                      style={{ height: "400px", objectFit: "cover" }}
+                      style={{ height: "100vh", objectFit: "cover" }}
                     />
                   </div>
                 </div>
@@ -109,8 +78,7 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
-      <Category/>
-      
+      <Category />
     </>
   );
 }
