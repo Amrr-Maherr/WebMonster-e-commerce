@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import About_img from "../Assets/OurStory-img.png";
+import About_img from "../Assets/pexels-karolina-grabowska-5632382.jpg";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 import emOne from "../Assets/Frame 874.png";
@@ -261,6 +261,35 @@ export default function About() {
                 </div>
               </motion.div>
             ))}
+          </div>
+
+          {/* Map Section */}
+          <div className="row mb-5">
+            <div className="col-12">
+              <h3 className="mb-4" style={{ fontWeight: "600" }}>
+                Our Location
+              </h3>
+              <div
+                style={{
+                  width: "100%",
+                  height: "400px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 12px #0001",
+                }}
+              >
+                <iframe
+                  title="Box&Buy Location"
+                  src="https://www.google.com/maps?q=Cairo,+Egypt&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+            </div>
           </div>
         </div>
       </motion.section>

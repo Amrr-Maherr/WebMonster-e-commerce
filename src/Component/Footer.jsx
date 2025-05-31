@@ -21,7 +21,7 @@ export default function Footer() {
             className="col-xl-3 col-md-6"
           >
             <h4 style={{ marginBottom: "20px", fontWeight: "600" }}>
-              EliteEshop
+              Box&amp;Buy
             </h4>
             <p>
               Leading online store for the latest electronics. Quality products,
@@ -42,7 +42,7 @@ export default function Footer() {
             <ul style={{ listStyle: "none", padding: "0" }}>
               <li>
                 <a
-                  href="#"
+                  href="/"
                   style={{ color: "#ffffff", textDecoration: "none" }}
                 >
                   Home
@@ -50,7 +50,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/shop"
                   style={{ color: "#ffffff", textDecoration: "none" }}
                 >
                   Shop
@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/contact"
                   style={{ color: "#ffffff", textDecoration: "none" }}
                 >
                   Contact Us
@@ -66,7 +66,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/faq"
                   style={{ color: "#ffffff", textDecoration: "none" }}
                 >
                   FAQs
@@ -92,8 +92,7 @@ export default function Footer() {
               <i className="fas fa-envelope"></i> support@eliteeshop.com
             </p>
             <p>
-              <i className="fas fa-map-marker-alt"></i> 456 Tech Street, San
-              Francisco, CA
+              <i className="fas fa-map-marker-alt"></i> Cairo, Egypt
             </p>
           </motion.div>
 
@@ -108,19 +107,46 @@ export default function Footer() {
               Follow Us
             </h4>
             <div style={{ display: "flex", gap: "15px" }}>
-              {["facebook-f", "twitter", "instagram", "linkedin-in"].map(
-                (icon, index) => (
-                  <motion.a
-                    key={icon}
-                    href="#"
-                    style={{ color: "#ffffff", fontSize: "20px" }}
-                    whileHover={{ scale: 1.2, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <i className={`fab fa-${icon}`}></i>
-                  </motion.a>
-                )
-              )}
+              <motion.a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#ffffff", fontSize: "20px" }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <i className="fab fa-facebook-f"></i>
+              </motion.a>
+              <motion.a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#ffffff", fontSize: "20px" }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <i className="fab fa-twitter"></i>
+              </motion.a>
+              <motion.a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#ffffff", fontSize: "20px" }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <i className="fab fa-instagram"></i>
+              </motion.a>
+              <motion.a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#ffffff", fontSize: "20px" }}
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <i className="fab fa-linkedin-in"></i>
+              </motion.a>
             </div>
           </motion.div>
         </div>
@@ -137,7 +163,7 @@ export default function Footer() {
             paddingTop: "20px",
           }}
         >
-          <p>© {new Date().getFullYear()} EliteEshop. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Box&amp;Buy. All rights reserved.</p>
         </motion.div>
       </div>
     </motion.footer>
