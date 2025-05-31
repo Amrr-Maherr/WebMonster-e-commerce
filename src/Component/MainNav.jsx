@@ -6,11 +6,27 @@ import { useEffect, useState } from "react";
 
 export default function MainNav() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const nav = useNavigate();
 
   useEffect(() => {
     const user = localStorage.getItem("signup_data");
     setIsLoggedIn(!!user);
+
+    // Get cart count from localStorage
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCartCount(cart.length);
+
+    // Listen for cart changes in other tabs/windows
+    const handleStorage = (e) => {
+      if (e.key === "cart") {
+        const updatedCart = JSON.parse(e.newValue) || [];
+        setCartCount(updatedCart.length);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+
+    return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
   const handleLogout = () => {
@@ -71,9 +87,30 @@ export default function MainNav() {
                     <i className="fas fa-heart"></i>
                   </Link>
                 </li>
-                <li className="nav-item">
+                <li className="nav-item position-relative">
                   <Link to="/cart" style={{ color: "black" }}>
                     <i className="fas fa-shopping-cart"></i>
+                    {cartCount > 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: "-8px",
+                          right: "-10px",
+                          background: "#DB4444",
+                          color: "#fff",
+                          borderRadius: "50%",
+                          fontSize: "12px",
+                          width: "20px",
+                          height: "20px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
                   </Link>
                 </li>
                 <li
