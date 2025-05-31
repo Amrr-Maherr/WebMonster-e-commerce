@@ -20,9 +20,9 @@ export default function Home() {
         />
         <Ad
           image={imgTwo}
-          title="Special Offer"
-          text="Get the best food products now with amazing discounts!"
-          buttonLabel="Shop Now"
+          title="Exclusive Organic Range"
+          text="Try our premium organic food selection for a healthier lifestyle. Limited time offers available!"
+          buttonLabel="Shop Organic"
         />
         <HomeBoxes />
         <Footer />

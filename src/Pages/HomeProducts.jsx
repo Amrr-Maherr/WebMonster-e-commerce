@@ -4,14 +4,17 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import fetchData from "../Redux/ActionCreator";
+import { useNavigate } from "react-router-dom";
+import { toast, Toaster } from "react-hot-toast";
+
 export default function HomeProducts() {
+  const nav = useNavigate();
   const products = useSelector((state) => state.ShopReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchData());
   }, [dispatch]);
-;
 
   const navButtonStyle = {
     width: "46px",
@@ -42,10 +45,24 @@ export default function HomeProducts() {
     },
   };
 
+  // Add To Cart function with react-hot-toast
+  const handleAddToCart = (item) => {
+    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const isAlreadyInCart = existingCart.some((p) => p.id === item.id);
+    if (isAlreadyInCart) {
+      toast.error("This product is already in the cart");
+      return;
+    }
+    const updatedCart = [...existingCart, item];
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    toast.success("Product added to cart");
+  };
+
   return (
     <section>
+      <Toaster position="top-center" />
       <div className="container my-5">
-        {/* عنوان القسم */}
+        {/* Section Title */}
         <div className="row mb-4">
           <div className="col-12">
             <div className="d-flex align-items-center gap-4">
@@ -83,25 +100,6 @@ export default function HomeProducts() {
               const extractImageId = (url) => {
                 const match = url.match(/\/d\/(.*?)\//);
                 return match ? match[1] : "";
-              };
-
-              // ✅ فنكشن الإضافة للكارت
-              const handleAddToCart = (item) => {
-                const existingCart =
-                  JSON.parse(localStorage.getItem("cart")) || [];
-
-                // تحقق إذا كان المنتج موجود مسبقًا (اختياري)
-                const isAlreadyInCart = existingCart.some(
-                  (p) => p.id === item.id
-                );
-                if (isAlreadyInCart) {
-                  alert("المنتج موجود بالفعل في السلة");
-                  return;
-                }
-
-                const updatedCart = [...existingCart, item];
-                localStorage.setItem("cart", JSON.stringify(updatedCart));
-                alert("تم إضافة المنتج إلى السلة");
               };
 
               return (
@@ -157,6 +155,9 @@ export default function HomeProducts() {
         <div className="row mt-5">
           <div className="col-12 text-center">
             <button
+              onClick={() => {
+                nav("/all-products");
+              }}
               style={{
                 width: "234px",
                 height: "56px",
