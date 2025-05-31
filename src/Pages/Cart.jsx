@@ -9,24 +9,37 @@ function Cart() {
 
   // ✅ تحميل البيانات من localStorage عند أول تحميل
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart"));
+    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     const cartWithQuantities = storedCart.map((item) => ({
       ...item,
-      quantity: item.quantity || 1, 
+      quantity: item.quantity || 1,
     }));
     setCartItems(cartWithQuantities);
   }, []);
 
-
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
+  // استخراج الرقم من السعر مثل "14.99$" => 14.99
+  const getPriceNumber = (price) => {
+    if (!price) return 0;
+    // يحذف أي رمز غير رقم أو نقطة
+    const num = parseFloat(price.toString().replace(/[^0-9.]/g, ""));
+    return isNaN(num) ? 0 : num;
   };
 
+  const calculateTotal = () => {
+    return cartItems
+      .reduce(
+        (total, item) =>
+          total + getPriceNumber(item.price) * (parseInt(item.quantity) || 1),
+        0
+      )
+      .toFixed(2);
+  };
+
+  // التعديل هنا: حذف المنتج من الكارت ومن localStorage
   const removeItem = (itemId) => {
-    setCartItems(cartItems.filter((item) => item.id !== itemId));
+    const updatedCart = cartItems.filter((item) => item.id !== itemId);
+    setCartItems(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
   const updateQuantity = (itemId, newQuantity) => {
@@ -39,13 +52,13 @@ function Cart() {
 
   const increaseQuantity = (itemId) => {
     const item = cartItems.find((item) => item.id === itemId);
-    updateQuantity(itemId, item.quantity + 1);
+    updateQuantity(itemId, (parseInt(item.quantity) || 1) + 1);
   };
 
   const decreaseQuantity = (itemId) => {
     const item = cartItems.find((item) => item.id === itemId);
-    if (item.quantity > 1) {
-      updateQuantity(itemId, item.quantity - 1);
+    if ((parseInt(item.quantity) || 1) > 1) {
+      updateQuantity(itemId, (parseInt(item.quantity) || 1) - 1);
     }
   };
 
@@ -124,7 +137,7 @@ function Cart() {
                             </div>
                           </div>
                         </td>
-                        <td>${item.price}</td>
+                        <td>${getPriceNumber(item.price)}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <button
@@ -142,7 +155,13 @@ function Cart() {
                             </button>
                           </div>
                         </td>
-                        <td>${item.price * item.quantity}</td>
+                        <td>
+                          $
+                          {(
+                            getPriceNumber(item.price) *
+                            (parseInt(item.quantity) || 1)
+                          ).toFixed(2)}
+                        </td>
                         <td>
                           <button
                             className="btn btn-outline-secondary btn-sm"

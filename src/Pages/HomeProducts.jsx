@@ -45,8 +45,13 @@ export default function HomeProducts() {
     },
   };
 
-  // Add To Cart function with react-hot-toast
+  // Add To Cart function with react-hot-toast and login check
   const handleAddToCart = (item) => {
+    const userData = JSON.parse(localStorage.getItem("signup_data"));
+    if (!userData) {
+      toast.error("You must be logged in to add products to the cart.");
+      return;
+    }
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
     const isAlreadyInCart = existingCart.some((p) => p.id === item.id);
     if (isAlreadyInCart) {
@@ -56,6 +61,19 @@ export default function HomeProducts() {
     const updatedCart = [...existingCart, item];
     localStorage.setItem("cart", JSON.stringify(updatedCart));
     toast.success("Product added to cart");
+  };
+
+  // Add to favorites function (localStorage)
+  const handleAddToFavorites = (item) => {
+    const existingFavs = JSON.parse(localStorage.getItem("favorites")) || [];
+    const isAlreadyFav = existingFavs.some((p) => p.id === item.id);
+    if (isAlreadyFav) {
+      toast.error("This product is already in favorites");
+      return;
+    }
+    const updatedFavs = [...existingFavs, item];
+    localStorage.setItem("favorites", JSON.stringify(updatedFavs));
+    toast.success("Product added to favorites");
   };
 
   return (
@@ -110,7 +128,12 @@ export default function HomeProducts() {
                         Offer {product.discount}
                       </div>
                       <div className="d-flex gap-2">
-                        <i className="far fa-heart"></i>
+                        <i
+                          className="far fa-heart"
+                          style={{ cursor: "pointer", color: "#DB4444" }}
+                          onClick={() => handleAddToFavorites(product)}
+                          title="Add to Favorites"
+                        ></i>
                         <i className="far fa-eye"></i>
                       </div>
                     </div>

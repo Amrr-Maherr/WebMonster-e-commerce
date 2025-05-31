@@ -1,27 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 
 function Favorites() {
-  const [favoriteItems, setFavoriteItems] = useState([
-    {
-      id: 3,
-      name: "Minimalist Backpack",
-      price: 55,
-      image:
-        "https://images.unsplash.com/photo-1571404854147-9aa059a15867?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTZ8fGJhY2twYWNrJTIwbW9kZXJufGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60",
-    },
-    {
-      id: 4,
-      name: "Geometric Planter",
-      price: 30,
-      image:
-        "https://images.unsplash.com/photo-1587541469791-7f02049241fe?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHBsYW50ZXIlMjBtb2Rlcm58ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60",
-    },
-  ]);
+  // جلب المنتجات من localStorage
+  const [favoriteItems, setFavoriteItems] = useState([]);
+
+  useEffect(() => {
+    const favs = JSON.parse(localStorage.getItem("favorites")) || [];
+    setFavoriteItems(favs);
+  }, []);
 
   const removeFromFavorites = (itemId) => {
-    setFavoriteItems(favoriteItems.filter((item) => item.id !== itemId));
+    const updatedFavs = favoriteItems.filter((item) => item.id !== itemId);
+    setFavoriteItems(updatedFavs);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavs));
   };
 
   const productCardStyle = {
@@ -44,7 +37,7 @@ function Favorites() {
 
   return (
     <>
-    <MainNav/>
+      <MainNav />
       <div className="container my-5">
         <div className="card border-0 shadow-sm">
           <div className="card-header bg-white border-bottom py-3">
@@ -78,14 +71,18 @@ function Favorites() {
                       }}
                     >
                       <img
-                        src={item.image}
+                        src={item.photo || item.image}
                         className="card-img-top"
-                        alt={item.name}
+                        alt={item.name || item.title}
                         style={{ height: "250px", objectFit: "cover" }}
                       />
                       <div className="card-body">
-                        <h5 className="card-title fw-bold">{item.name}</h5>
-                        <p className="card-text text-muted">${item.price}</p>
+                        <h5 className="card-title fw-bold">
+                          {item.name || item.title}
+                        </h5>
+                        <p className="card-text text-muted">
+                          {item.price ? `$${item.price}` : ""}
+                        </p>
                         <button
                           className="btn btn-outline-secondary btn-sm"
                           style={removeFavoriteBtnStyle}
@@ -110,7 +107,7 @@ function Favorites() {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

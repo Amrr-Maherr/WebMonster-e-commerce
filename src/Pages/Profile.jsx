@@ -1,6 +1,8 @@
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function Profile() {
   const containerVariants = {
@@ -19,14 +21,68 @@ export default function Profile() {
     },
   };
 
+  // State for form fields
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+
+  // Load profile data from localStorage on mount
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("profile_data"));
+    if (profile) {
+      setFirstName(profile.firstName || "");
+      setLastName(profile.lastName || "");
+      setEmail(profile.email || "");
+      setAddress(profile.address || "");
+    }
+  }, []);
+
+  // Save handler
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    // Password validation (if user wants to change password)
+    if (password || confirmPassword) {
+      if (password !== confirmPassword) {
+        toast.error("Passwords do not match.");
+        return;
+      }
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters.");
+        return;
+      }
+    }
+
+    // Save profile data
+    const profileData = {
+      firstName,
+      lastName,
+      email,
+      address,
+      // Don't save password in localStorage for real apps!
+      password: password ? password : undefined,
+    };
+    try {
+      localStorage.setItem("profile_data", JSON.stringify(profileData));
+      toast.success("Profile saved successfully!");
+    } catch (err) {
+      toast.error("Failed to save profile.");
+    }
+  };
+
   return (
     <>
+      <Toaster position="top-center" />
       <MainNav />
       <section>
         <div className="container">
           <div className="row">
             <div className="col-12" style={{ margin: "80px 0px" }}>
-              <p className="text-end">Welcome! Md Rimel</p>
+              <p className="text-end">Welcome! {firstName || "User"}</p>
             </div>
             <div className="row" style={{ marginBottom: "140px" }}>
               <div className="col-xl-3 col-12">
@@ -102,7 +158,7 @@ export default function Profile() {
                 </ul>
               </div>
               <div className="col-xl-9 col-12">
-                <motion.div
+                <motion.form
                   className="form w-100 d-flex align-items-start justify-content-between flex-column"
                   style={{
                     height: "auto",
@@ -114,6 +170,7 @@ export default function Profile() {
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
+                  onSubmit={handleSave}
                 >
                   <div className="title" style={{ marginBottom: "16px" }}>
                     <h2
@@ -148,6 +205,8 @@ export default function Profile() {
                           id="firstName"
                           className="form-control"
                           placeholder="Enter your first name"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
                         />
                       </div>
                     </div>
@@ -168,6 +227,8 @@ export default function Profile() {
                           id="lastName"
                           className="form-control"
                           placeholder="Enter your last name"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
                         />
                       </div>
                     </div>
@@ -190,6 +251,8 @@ export default function Profile() {
                           id="email"
                           className="form-control"
                           placeholder="Enter your email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
                       </div>
                     </div>
@@ -210,6 +273,8 @@ export default function Profile() {
                           id="address"
                           className="form-control"
                           placeholder="Enter your address"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
                         />
                       </div>
                     </div>
@@ -236,6 +301,8 @@ export default function Profile() {
                           id="password"
                           className="form-control"
                           placeholder="Enter new password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                       </div>
                     </div>
@@ -251,6 +318,8 @@ export default function Profile() {
                           id="confirmPassword"
                           className="form-control"
                           placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                       </div>
                     </div>
@@ -266,6 +335,8 @@ export default function Profile() {
                           id="oldPassword"
                           className="form-control"
                           placeholder="Enter current password"
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)}
                         />
                       </div>
                     </div>
@@ -275,8 +346,8 @@ export default function Profile() {
                       <div className="d-flex text-end justify-content-end gap-3 align-items-center">
                         <p className="p-0 m-0">Cancel</p>
                         <motion.button
-                        whileHover={{scale:1.1}}
-                        whileTap={{scale:0.8}}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.8 }}
                           style={{
                             width: "214px",
                             height: "56px",
@@ -287,13 +358,14 @@ export default function Profile() {
                             fontWeight: "500",
                             color: "white",
                           }}
+                          type="submit"
                         >
                           Save Changes
                         </motion.button>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </motion.form>
               </div>
             </div>
           </div>

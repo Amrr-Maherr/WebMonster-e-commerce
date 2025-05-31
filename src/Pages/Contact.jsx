@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
+import { toast, Toaster } from "react-hot-toast";
 
 //-- Variants for animations --
 const fadeIn = {
@@ -28,8 +29,38 @@ const iconAnimation = {
 };
 
 export default function Contact() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!name || !email || !phone || !message) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+    // Save message to localStorage (for demo)
+    const contactMessages =
+      JSON.parse(localStorage.getItem("contact_messages")) || [];
+    contactMessages.push({
+      name,
+      email,
+      phone,
+      message,
+      date: new Date().toISOString(),
+    });
+    localStorage.setItem("contact_messages", JSON.stringify(contactMessages));
+    toast.success("Message sent successfully!");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setMessage("");
+  };
+
   return (
     <>
+      <Toaster position="top-center" />
       <MainNav />
       <motion.section
         style={{ margin: "50px 0px" }}
@@ -120,12 +151,13 @@ export default function Contact() {
               style={{ padding: "30px 0px" }}
               variants={slideInRight}
             >
-              <div className="contact-form  h-100 w-100 d-flex align-items-end justify-content-between flex-column">
+              <form
+                className="contact-form  h-100 w-100 d-flex align-items-end justify-content-between flex-column"
+                onSubmit={handleSend}
+              >
                 <div className="d-flex align-items-center justify-content-between flex-wrap w-100">
                   <input
                     type="text"
-                    name=""
-                    id=""
                     className="my-2 px-2"
                     placeholder="Your Name *"
                     style={{
@@ -134,11 +166,11 @@ export default function Contact() {
                       border: "none",
                       backgroundColor: "#F5F5F5",
                     }}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                   <input
                     type="text"
-                    name=""
-                    id=""
                     className="my-2 px-2"
                     placeholder="Your Email *"
                     style={{
@@ -147,11 +179,11 @@ export default function Contact() {
                       border: "none",
                       backgroundColor: "#F5F5F5",
                     }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <input
                     type="text"
-                    name=""
-                    id=""
                     className="my-2 px-2"
                     placeholder="Your Phone *"
                     style={{
@@ -160,13 +192,13 @@ export default function Contact() {
                       border: "none",
                       backgroundColor: "#F5F5F5",
                     }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
                 <div style={{ width: "100%", height: "207px" }}>
                   <textarea
                     className="p-2"
-                    name=""
-                    id=""
                     style={{
                       width: "100%",
                       height: "100%",
@@ -174,10 +206,13 @@ export default function Contact() {
                       border: "none",
                     }}
                     placeholder="Your Massage"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                   ></textarea>
                 </div>
                 <div>
                   <button
+                    type="submit"
                     style={{
                       width: "215px",
                       height: "56px",
@@ -192,7 +227,7 @@ export default function Contact() {
                     Send Massage
                   </button>
                 </div>
-              </div>
+              </form>
             </motion.div>
           </div>
         </div>
