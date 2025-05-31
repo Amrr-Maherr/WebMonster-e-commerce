@@ -1,9 +1,24 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SubNav from "../Component/SubNav";
 import "../Style/MainNav.css";
+import { useEffect, useState } from "react";
 
 export default function MainNav() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("signup_data");
+    setIsLoggedIn(!!user);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("signup_data");
+    setIsLoggedIn(false);
+    nav("/login");
+  };
+
   return (
     <>
       <SubNav />
@@ -50,13 +65,6 @@ export default function MainNav() {
               </li>
             </ul>
             <ul className="navbar-nav-two d-flex align-items-center gap-3">
-              {/* <li className="nav-item">
-                <input
-                  type="search"
-                  className="form-control"
-                  placeholder="Search..."
-                />
-              </li> */}
               <ul className="list-unstyled d-flex gap-3 m-0">
                 <li className="nav-item">
                   <Link to="/favorite" className="text-danger">
@@ -78,9 +86,19 @@ export default function MainNav() {
                   }}
                 >
                   <Link to="/profile" style={{ color: "white" }}>
-                    <i className="fas fa-user"></i> {/* أيقونة البروفايل */}
+                    <i className="fas fa-user"></i>
                   </Link>
                 </li>
+                {isLoggedIn && (
+                  <li className="nav-item">
+                    <button
+                      className="btn btn-outline-danger btn-sm ms-2"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                )}
               </ul>
             </ul>
           </div>

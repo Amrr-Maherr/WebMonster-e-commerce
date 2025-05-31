@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SignUp_Image from "../../Assets/Side Image.png";
 import Footer from "../../Component/Footer";
 import MainNav from "../../Component/MainNav";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function SignUp() {
+  const navigate = useNavigate()
   const [name, setName] = useState("");
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -21,6 +22,7 @@ export default function SignUp() {
     };
     localStorage.setItem("signup_data", JSON.stringify(userData));
     // You can add a success message or redirect here if needed
+    navigate("/login")
   };
 
   return (
