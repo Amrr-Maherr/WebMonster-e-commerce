@@ -95,7 +95,7 @@ export default function Category() {
               whileHover="hover"
             >
               <i className="fas fa-apple-alt" style={{ fontSize: "30px" }}></i>
-              <p>Fruits & Vegetables</p>
+              <p style={{textAlign:"center"}}>Fruits & Vegetables</p>
             </motion.div>
           </div>
           <div className="col-xl-3 col-md-4 col-12">
