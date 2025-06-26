@@ -40,7 +40,6 @@ export default function Contact() {
       toast.error("Please fill in all fields.");
       return;
     }
-    // Save message to localStorage (for demo)
     const contactMessages =
       JSON.parse(localStorage.getItem("contact_messages")) || [];
     contactMessages.push({
@@ -146,71 +145,82 @@ export default function Contact() {
                 </div>
               </div>
             </motion.div>
+
             <motion.div
               className="col-xl-7"
               style={{ padding: "30px 0px" }}
               variants={slideInRight}
             >
-              <form
-                className="contact-form  h-100 w-100 d-flex align-items-end justify-content-between flex-column"
-                onSubmit={handleSend}
-              >
-                <div className="d-flex align-items-center justify-content-between flex-wrap w-100">
-                  <input
-                    type="text"
-                    className="my-2 px-2"
-                    placeholder="Your Name *"
-                    style={{
-                      height: "50px",
-                      borderRadius: "4px",
-                      border: "none",
-                      backgroundColor: "#F5F5F5",
-                    }}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className="my-2 px-2"
-                    placeholder="Your Email *"
-                    style={{
-                      height: "50px",
-                      borderRadius: "4px",
-                      border: "none",
-                      backgroundColor: "#F5F5F5",
-                    }}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    className="my-2 px-2"
-                    placeholder="Your Phone *"
-                    style={{
-                      height: "50px",
-                      borderRadius: "4px",
-                      border: "none",
-                      backgroundColor: "#F5F5F5",
-                    }}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
+              <form className="w-100" onSubmit={handleSend}>
+                <div className="row">
+                  <div className="col-md-4 mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Your Name *"
+                      style={{
+                        height: "50px",
+                        backgroundColor: "#F5F5F5",
+                        border: "none",
+                        borderRadius: "4px",
+                        paddingLeft: "10px",
+                      }}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <input
+                      type="email"
+                      className="form-control"
+                      placeholder="Your Email *"
+                      style={{
+                        height: "50px",
+                        backgroundColor: "#F5F5F5",
+                        border: "none",
+                        borderRadius: "4px",
+                        paddingLeft: "10px",
+                      }}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Your Phone *"
+                      style={{
+                        height: "50px",
+                        backgroundColor: "#F5F5F5",
+                        border: "none",
+                        borderRadius: "4px",
+                        paddingLeft: "10px",
+                      }}
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div style={{ width: "100%", height: "207px" }}>
+
+                <div className="mb-3">
                   <textarea
-                    className="p-2"
+                    className="form-control"
+                    placeholder="Your Message"
                     style={{
                       width: "100%",
-                      height: "100%",
+                      height: "200px",
                       backgroundColor: "#F5F5F5",
                       border: "none",
+                      borderRadius: "4px",
+                      padding: "10px",
                     }}
-                    placeholder="Your Massage"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   ></textarea>
                 </div>
-                <div>
+
+                <div className="text-end">
                   <button
                     type="submit"
                     style={{
@@ -224,7 +234,7 @@ export default function Contact() {
                       fontWeight: "500",
                     }}
                   >
-                    Send Massage
+                    Send Message
                   </button>
                 </div>
               </form>
