@@ -17,6 +17,8 @@ import Checkout from './Pages/Checkout';
 import ThankYou from './Pages/ThankYou';
 import AllProducts from './Component/AllProducts';
 import { Toaster } from 'react-hot-toast';
+import ForgetPassword from './Pages/Authentication/ForgetPassword';
+import ResetPassword from './Pages/Authentication/ResetPassword';
 function App() {
   return (
     <>
@@ -36,6 +38,8 @@ function App() {
             <Route path="/check-out" element={<Checkout />} />
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/all-products" element={<AllProducts />} />
+            <Route path="/Forget-Password" element={<ForgetPassword />} />
+            <Route path="/Reset-Password" element={<ResetPassword />} />
           </Routes>
         </div>
       </BrowserRouter>

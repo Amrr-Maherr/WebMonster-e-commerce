@@ -114,7 +114,7 @@ export default function HomeProducts() {
 
         <div className="row">
           <Marquee speed={40} pauseOnHover={true}>
-            {products.map((product) => {
+            {/* {products.map((product) => {
               const extractImageId = (url) => {
                 const match = url.match(/\/d\/(.*?)\//);
                 return match ? match[1] : "";
@@ -171,7 +171,7 @@ export default function HomeProducts() {
                   </div>
                 </div>
               );
-            })}
+            })} */}
           </Marquee>
         </div>
 

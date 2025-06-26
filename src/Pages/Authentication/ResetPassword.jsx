@@ -1,33 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 import Login_Img from "../../Assets/Side Image.png";
 import Footer from "../../Component/Footer";
 import MainNav from "../../Component/MainNav";
-import { useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
 
-export default function Login() {
+export default function ResetPassword() {
   const navigate = useNavigate();
-  const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleResetPassword = (e) => {
     e.preventDefault();
-    if (!emailOrPhone || !password) {
+    if (!password || !confirmPassword) {
       toast.error("Please fill in all fields.");
       return;
     }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+    // Simulate password reset (replace with actual API call in production)
     try {
       const userData = JSON.parse(localStorage.getItem("signup_data")) || {};
-      if (
-        userData.emailOrPhone === emailOrPhone &&
-        userData.password === password
-      ) {
-        toast.success("Login successful!");
-        navigate("/");
-      } else {
-        toast.error("Invalid email/phone or password.");
-      }
+      userData.password = password; // Update password (insecure for production)
+      localStorage.setItem("signup_data", JSON.stringify(userData));
+      toast.success("Password reset successful!");
+      setTimeout(() => navigate("/login"), 2000); // Redirect to login
     } catch (error) {
       toast.error("An error occurred. Please try again.");
     }
@@ -50,13 +54,13 @@ export default function Login() {
               <div className="login-img" style={{ height: "781px" }}>
                 <img
                   src={Login_Img}
-                  alt="Login page illustration"
+                  alt="Reset password illustration"
                   style={{ height: "100%", width: "100%" }}
                 />
               </div>
             </motion.div>
 
-            {/* Login form with animation */}
+            {/* Reset Password form with animation */}
             <motion.div
               className="col-xl-6 col-12 d-flex align-items-center justify-content-center my-4"
               initial={{ opacity: 0, x: 50 }}
@@ -64,11 +68,14 @@ export default function Login() {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <form
-                className="login-form"
+                className="reset-password-form"
                 style={{ width: "371px", height: "326px" }}
-                onSubmit={handleLogin}
+                onSubmit={handleResetPassword}
               >
-                <div className="login-title" style={{ marginBottom: "48px" }}>
+                <div
+                  className="reset-password-title"
+                  style={{ marginBottom: "48px" }}
+                >
                   <h1
                     style={{
                       fontSize: "36px",
@@ -77,7 +84,7 @@ export default function Login() {
                       marginBottom: "24px",
                     }}
                   >
-                    Log in to Exclusive
+                    Reset Password
                   </h1>
                   <p
                     style={{
@@ -86,7 +93,7 @@ export default function Login() {
                       color: "black",
                     }}
                   >
-                    Enter your details below
+                    Enter your new password below
                   </p>
                 </div>
 
@@ -99,12 +106,12 @@ export default function Login() {
                       padding: "10px 0px",
                       marginBottom: "40px",
                     }}
-                    type="text"
+                    type="password"
                     className="w-100"
-                    placeholder="Email or Phone Number"
-                    value={emailOrPhone}
-                    onChange={(e) => setEmailOrPhone(e.target.value)}
-                    aria-label="Email or Phone Number"
+                    placeholder="New Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    aria-label="New Password"
                   />
                 </div>
 
@@ -119,10 +126,10 @@ export default function Login() {
                     }}
                     type="password"
                     className="w-100"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    aria-label="Password"
+                    placeholder="Confirm Password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    aria-label="Confirm Password"
                   />
                 </div>
 
@@ -141,21 +148,20 @@ export default function Login() {
                       border: "none",
                     }}
                     type="submit"
-                    aria-label="Log In"
+                    aria-label="Reset Password"
                   >
-                    Log In
+                    Reset Password
                   </motion.button>
                   <Link
-                    to="/forget-password"
+                    to="/login"
                     style={{
                       fontSize: "16px",
                       fontWeight: "400",
                       color: "#DB4444",
                       textDecoration: "none",
                     }}
-                    aria-label="Forgot Password"
                   >
-                    Forget password
+                    Back to Login
                   </Link>
                 </div>
               </form>

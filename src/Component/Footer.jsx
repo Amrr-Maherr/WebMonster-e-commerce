@@ -12,7 +12,7 @@ export default function Footer() {
         padding: "60px 0",
       }}
     >
-      <div className="container">
+      <div className="container-fluid">
         <div className="row">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

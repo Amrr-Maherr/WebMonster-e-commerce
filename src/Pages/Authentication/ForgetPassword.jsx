@@ -1,32 +1,29 @@
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 import Login_Img from "../../Assets/Side Image.png";
 import Footer from "../../Component/Footer";
 import MainNav from "../../Component/MainNav";
-import { useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
 
-export default function Login() {
+export default function ForgetPassword() {
   const navigate = useNavigate();
   const [emailOrPhone, setEmailOrPhone] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleForgetPassword = (e) => {
     e.preventDefault();
-    if (!emailOrPhone || !password) {
-      toast.error("Please fill in all fields.");
+    if (!emailOrPhone) {
+      toast.error("Please enter your email or phone number.");
       return;
     }
+    // Simulate sending reset link (replace with actual API call in production)
     try {
       const userData = JSON.parse(localStorage.getItem("signup_data")) || {};
-      if (
-        userData.emailOrPhone === emailOrPhone &&
-        userData.password === password
-      ) {
-        toast.success("Login successful!");
-        navigate("/");
+      if (userData.emailOrPhone === emailOrPhone) {
+        toast.success("Reset link sent! Check your email or phone.");
+        setTimeout(() => navigate("/reset-password"), 2000); // Simulate redirect
       } else {
-        toast.error("Invalid email/phone or password.");
+        toast.error("Email or phone not found.");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
@@ -50,13 +47,13 @@ export default function Login() {
               <div className="login-img" style={{ height: "781px" }}>
                 <img
                   src={Login_Img}
-                  alt="Login page illustration"
+                  alt="Forgot password illustration"
                   style={{ height: "100%", width: "100%" }}
                 />
               </div>
             </motion.div>
 
-            {/* Login form with animation */}
+            {/* Forget Password form with animation */}
             <motion.div
               className="col-xl-6 col-12 d-flex align-items-center justify-content-center my-4"
               initial={{ opacity: 0, x: 50 }}
@@ -64,11 +61,14 @@ export default function Login() {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <form
-                className="login-form"
+                className="forget-password-form"
                 style={{ width: "371px", height: "326px" }}
-                onSubmit={handleLogin}
+                onSubmit={handleForgetPassword}
               >
-                <div className="login-title" style={{ marginBottom: "48px" }}>
+                <div
+                  className="forget-password-title"
+                  style={{ marginBottom: "48px" }}
+                >
                   <h1
                     style={{
                       fontSize: "36px",
@@ -77,7 +77,7 @@ export default function Login() {
                       marginBottom: "24px",
                     }}
                   >
-                    Log in to Exclusive
+                    Forgot Password
                   </h1>
                   <p
                     style={{
@@ -86,7 +86,7 @@ export default function Login() {
                       color: "black",
                     }}
                   >
-                    Enter your details below
+                    Enter your email or phone number to reset your password
                   </p>
                 </div>
 
@@ -108,24 +108,6 @@ export default function Login() {
                   />
                 </div>
 
-                <div>
-                  <input
-                    style={{
-                      border: "none",
-                      borderBottom: "1px solid black",
-                      outline: "none",
-                      padding: "10px 0px",
-                      marginBottom: "40px",
-                    }}
-                    type="password"
-                    className="w-100"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    aria-label="Password"
-                  />
-                </div>
-
                 <div className="w-100 d-flex align-items-center justify-content-between">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -141,21 +123,20 @@ export default function Login() {
                       border: "none",
                     }}
                     type="submit"
-                    aria-label="Log In"
+                    aria-label="Send Reset Link"
                   >
-                    Log In
+                    Send Reset Link
                   </motion.button>
                   <Link
-                    to="/forget-password"
+                    to="/login"
                     style={{
                       fontSize: "16px",
                       fontWeight: "400",
                       color: "#DB4444",
                       textDecoration: "none",
                     }}
-                    aria-label="Forgot Password"
                   >
-                    Forget password
+                    Back to Login
                   </Link>
                 </div>
               </form>
