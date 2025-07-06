@@ -21,6 +21,8 @@ export default function HeroSection() {
               <div
                 id="carouselExample"
                 className="carousel slide"
+                data-bs-ride="carousel"
+                data-bs-interval="2000"
                 style={{ height: "100%" }}
               >
                 <div className="carousel-inner" style={{ height: "100%" }}>
