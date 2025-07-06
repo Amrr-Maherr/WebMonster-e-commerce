@@ -11,25 +11,63 @@ export default function Login() {
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!emailOrPhone || !password) {
-      toast.error("Please fill in all fields.");
+
+    // ✅ التحقق من الحقول
+    if (!emailOrPhone.trim()) {
+      toast.error("Please enter your email or phone number.");
       return;
     }
+
+    if (!password.trim()) {
+      toast.error("Please enter your password.");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
     try {
-      const userData = JSON.parse(localStorage.getItem("signup_data")) || {};
-      if (
-        userData.emailOrPhone === emailOrPhone &&
-        userData.password === password
-      ) {
+      const response = await fetch(
+        "https://e-commerce-project-production-2e7f.up.railway.app/user/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: emailOrPhone,
+            password: password,
+          }),
+        }
+      );
+
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+
+      if (response.ok) {
         toast.success("Login successful!");
+
+        if (typeof data === "object" && data.token) {
+          localStorage.setItem("token", data.token);
+        }
+
         navigate("/");
       } else {
-        toast.error("Invalid email/phone or password.");
+        toast.error(data?.message || data || "Login failed.");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
+      console.error("Login error:", error);
     }
   };
 

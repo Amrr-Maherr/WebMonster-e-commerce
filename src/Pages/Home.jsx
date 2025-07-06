@@ -6,6 +6,7 @@ import HomeProducts from "./HomeProducts";
 import HomeBoxes from "../Component/HomeBoxes";
 import imgOne from "../Assets/pexels-townsend-walton-6231368-29693465.jpg"
 import imgTwo from "../Assets/pexels-introspectivedsgn-9592497.jpg"
+import VideoBackgroundSection from "../Component/VideoBackgroundSection";
 export default function Home() {
     return (
       <>
@@ -18,6 +19,7 @@ export default function Home() {
           text="Get the best food products now with amazing discounts!"
           buttonLabel="Shop Now"
         />
+        <HomeProducts sectionTitle="Top Picks Today" productCount={5} />
         <Ad
           image={imgTwo}
           title="Exclusive Organic Range"
@@ -25,6 +27,7 @@ export default function Home() {
           buttonLabel="Shop Organic"
         />
         <HomeBoxes />
+        <HomeProducts sectionTitle="Hot Deals Now" productCount={15} />
         <Footer />
       </>
     );

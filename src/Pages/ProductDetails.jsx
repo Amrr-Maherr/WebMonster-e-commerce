@@ -1,127 +1,97 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 
 export default function ProductDetails() {
-  const product = {
-    id: 1,
-    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
-    price: 109.95,
-    description:
-      "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
-    category: "men's clothing",
-    image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
-    rating: {
-      rate: 3.9,
-      count: 120,
-    },
-  };
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const containerStyle = {
-    marginTop: "5rem",
-  };
+  useEffect(() => {
+    fetch(
+      `https://e-commerce-project-production-2e7f.up.railway.app/user/product/${id}`
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Product not found");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setProduct(data);
+      })
+      .catch((err) => {
+        toast.error("Error fetching product details.");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
-  const imageStyle = {
-    width: "100%",
-    height: "400px",
-    objectFit: "cover",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  };
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-danger" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-  const detailsStyle = {
-    paddingTop: "2rem",
-  };
+  if (!product) {
+    return (
+      <div className="text-center py-5 text-danger">Product not found.</div>
+    );
+  }
 
-  const titleStyle = {
-    fontWeight: "bold",
-    fontSize: "2rem",
-    marginBottom: "1rem",
-    color: "#343a40",
-  };
-
-  const descriptionStyle = {
-    color: "#6c757d",
-    marginBottom: "1.5rem",
-  };
-
-  const priceStyle = {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    color: "#28a745",
-    marginBottom: "1rem",
-  };
-
-  const ratingStyle = {
-    color: "#ffc107",
-    marginBottom: "1rem",
-  };
-
-  const buttonStyle = {
-    borderRadius: "25px",
-    padding: "0.75rem 1.5rem",
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-    marginRight: "1rem", // Add some right margin
-  };
-
-  const favoriteButtonStyle = {
-    borderRadius: "25px",
-    padding: "0.75rem 1.5rem",
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-  };
+  const {
+    name,
+    price,
+    title,
+    rate,
+    photo,
+    discount,
+    category,
+    description,
+    soldCount,
+  } = product;
 
   return (
     <>
-      <MainNav />
-      <section>
-        <div className="container my-5" style={containerStyle}>
-          <div className="row">
-            <div className="col-md-6">
-              <img
-                src={product.image}
-                alt={product.title}
-                style={imageStyle}
-                className="img-fluid"
-              />
-            </div>
-            <div className="col-md-6" style={detailsStyle}>
-              <h1 style={titleStyle}>{product.title}</h1>
-              <p style={descriptionStyle}>{product.description}</p>
-              <p style={priceStyle}>${product.price}</p>
-              <div style={ratingStyle}>
-                {[...Array(5)].map((star, index) => {
-                  const ratingValue = index + 1;
-                  return (
-                    <i
-                      key={index}
-                      className={`bi bi-star${
-                        ratingValue <= product.rating.rate ? "-fill" : ""
-                      }`}
-                    ></i>
-                  );
-                })}
-                <span className="ms-2 text-muted">
-                  ({product.rating.count} Reviews)
-                </span>
-              </div>
-              <button className="btn btn-outline-primary" style={buttonStyle}>
-                <i className="bi bi-cart-plus me-2"></i>
-                Add to Cart
-              </button>
-              <button
-                className="btn btn-outline-secondary"
-                style={favoriteButtonStyle}
-              >
-                <i className="bi bi-heart me-2"></i>
-                Add to Favorites
-              </button>
-            </div>
+      <MainNav/>
+      <div className="container py-5">
+        <div className="row g-5 align-items-center">
+          <div className="col-md-6 text-center">
+            <img
+              src={photo}
+              alt={name}
+              className="img-fluid rounded shadow"
+              style={{ maxHeight: "400px", objectFit: "contain" }}
+            />
+          </div>
+          <div className="col-md-6">
+            <h2 className="mb-3">{title}</h2>
+            <p className="text-muted mb-2">{category}</p>
+            <h4 className="text-danger mb-3">
+              {price}{" "}
+              <small className="text-success ms-2">({discount} OFF)</small>
+            </h4>
+            <p className="mb-2">
+              <strong>Rating:</strong> ⭐ {rate} / 5
+            </p>
+            <p className="mb-2">
+              <strong>Sold:</strong> {soldCount} item
+              {soldCount !== 1 ? "s" : ""}
+            </p>
+            <p className="mb-4">{description}</p>
+            <button className="btn btn-primary px-4">Add to Cart</button>
           </div>
         </div>
-      </section>
-      <Footer />
+      </div>
+      <Footer/>
     </>
   );
 }

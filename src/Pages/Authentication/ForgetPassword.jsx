@@ -10,23 +10,44 @@ export default function ForgetPassword() {
   const navigate = useNavigate();
   const [emailOrPhone, setEmailOrPhone] = useState("");
 
-  const handleForgetPassword = (e) => {
+  const handleForgetPassword = async (e) => {
     e.preventDefault();
-    if (!emailOrPhone) {
+
+    if (!emailOrPhone.trim()) {
       toast.error("Please enter your email or phone number.");
       return;
     }
-    // Simulate sending reset link (replace with actual API call in production)
+
     try {
-      const userData = JSON.parse(localStorage.getItem("signup_data")) || {};
-      if (userData.emailOrPhone === emailOrPhone) {
-        toast.success("Reset link sent! Check your email or phone.");
-        setTimeout(() => navigate("/reset-password"), 2000); // Simulate redirect
+      const response = await fetch(
+        "https://e-commerce-project-production-2e7f.up.railway.app/user/forgetpassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: emailOrPhone }),
+        }
+      );
+
+      const text = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = text;
+      }
+
+      if (response.ok) {
+        toast.success(data?.message || "Reset link sent! Check your email.");
+        setTimeout(() => navigate("/reset-password"), 2000);
       } else {
-        toast.error("Email or phone not found.");
+        toast.error(data?.message || data || "Something went wrong.");
       }
     } catch (error) {
       toast.error("An error occurred. Please try again.");
+      console.error("Forget password error:", error);
     }
   };
 

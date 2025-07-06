@@ -32,7 +32,6 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/product-details" element={<ProductDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/favorite" element={<Favorites />} />
             <Route path="/check-out" element={<Checkout />} />
@@ -40,6 +39,7 @@ function App() {
             <Route path="/all-products" element={<AllProducts />} />
             <Route path="/Forget-Password" element={<ForgetPassword />} />
             <Route path="/Reset-Password" element={<ResetPassword />} />
+            <Route path="/product/:id" element={<ProductDetails />} />
           </Routes>
         </div>
       </BrowserRouter>

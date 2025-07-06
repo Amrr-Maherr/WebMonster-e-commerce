@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Ad from "./Ad";
-import imgTwo from "../Assets/pexels-townsend-walton-6231368-29693465.jpg";
 import Footer from "./Footer";
 import SubNav from "./SubNav";
 import MainNav from "./MainNav";
 import { toast, Toaster } from "react-hot-toast";
+import VideoBackgroundSection from "./VideoBackgroundSection";
+import { Link } from "react-router-dom"; // ✅ إضافة Link
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -13,7 +14,6 @@ export default function AllProducts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch products from the provided endpoint
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -21,7 +21,7 @@ export default function AllProducts() {
         const response = await axios.get(
           "https://e-commerce-project-production-2e7f.up.railway.app/user/allproduct"
         );
-        setProducts(response.data); // Assuming response.data is an array of products
+        setProducts(response.data);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch products. Please try again later.");
@@ -32,7 +32,6 @@ export default function AllProducts() {
     fetchProducts();
   }, []);
 
-  // Add to cart function (localStorage) with react-hot-toast and login check
   const handleAddToCart = (item) => {
     const userData = JSON.parse(localStorage.getItem("signup_data"));
     if (!userData) {
@@ -50,7 +49,6 @@ export default function AllProducts() {
     toast.success("Product added to cart");
   };
 
-  // Add to favorites function (localStorage)
   const handleAddToFavorites = (item) => {
     const existingFavs = JSON.parse(localStorage.getItem("favorites")) || [];
     const isAlreadyFav = existingFavs.some((p) => p.id === item.id);
@@ -63,7 +61,6 @@ export default function AllProducts() {
     toast.success("Product added to favorites");
   };
 
-  // Filter products by search
   const filteredProducts =
     products && products.length > 0
       ? products.filter(
@@ -74,7 +71,6 @@ export default function AllProducts() {
         )
       : [];
 
-  // Card style
   const cardStyle = {
     width: "18rem",
     position: "relative",
@@ -83,7 +79,7 @@ export default function AllProducts() {
     boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
     border: "none",
     margin: "auto",
-    minHeight: "460px", // Increased to accommodate extra fields
+    minHeight: "460px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -93,12 +89,12 @@ export default function AllProducts() {
     <>
       <Toaster position="top-center" />
       <MainNav />
-      <Ad
-        image={imgTwo}
-        title="Exclusive Organic Range"
-        text="Try our premium organic food selection for a healthier lifestyle. Limited time offers available!"
-        buttonLabel="Shop Organic"
+      <VideoBackgroundSection
+        title="Taste the Freshness"
+        text="Discover high-quality organic and gourmet foods delivered straight to your doorstep. Eat healthy, live better."
+        videoSrc="https://videocdn.cdnpk.net/videos/ef621f86-8584-4aa0-b5db-e07a56d0fe23/horizontal/previews/clear/small.mp4?token=exp=1751839420~hmac=3ca5e4a38026d7ac93eae1a6e612d76d30116c2facb45835b9ef6ee4919aff33"
       />
+
       <section className="container-fluid my-5">
         <div className="row mb-4">
           <div className="col-12 col-md-6 mx-auto">
@@ -112,6 +108,7 @@ export default function AllProducts() {
             />
           </div>
         </div>
+
         <div className="row">
           {loading ? (
             <div className="col-12 text-center">
@@ -143,13 +140,27 @@ export default function AllProducts() {
                         title="Add to Favorites"
                         aria-label="Add to favorites"
                       ></i>
-                      <i
-                        className="far fa-eye"
+
+                      {/* ✅ رابط تفاصيل المنتج داخل أيقونة العين */}
+                      <Link
+                        to={`/product/${product.id}`}
                         title="View product"
                         aria-label="View product"
-                      ></i>
+                        style={{
+                          color: "inherit",
+                          display: "flex",
+                          alignItems: "flex-start",
+                          textDecoration: "none",
+                        }}
+                      >
+                        <i
+                          className="far fa-eye"
+                          style={{ cursor: "pointer", color: "#000" }}
+                        ></i>
+                      </Link>
                     </div>
                   </div>
+
                   <img
                     src={product.photo}
                     className="card-img-top"
@@ -160,6 +171,7 @@ export default function AllProducts() {
                       borderRadius: "8px 8px 0 0",
                     }}
                   />
+
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{product.title}</h5>
                     <p className="card-text mb-1">{product.name}</p>
@@ -174,11 +186,6 @@ export default function AllProducts() {
                     </p>
                     <p className="card-text mb-1">
                       <strong>Rate:</strong> {product.rate} ⭐
-                    </p>
-                    <p className="card-text mb-1 text-muted">
-                      {product.description.length > 60
-                        ? `${product.description.substring(0, 60)}...`
-                        : product.description}
                     </p>
                     <button
                       style={{
@@ -207,6 +214,7 @@ export default function AllProducts() {
           )}
         </div>
       </section>
+
       <Footer />
     </>
   );
