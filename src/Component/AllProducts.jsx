@@ -1,7 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import fetchData from "../Redux/ActionCreator";
 import Ad from "./Ad";
 import imgTwo from "../Assets/pexels-townsend-walton-6231368-29693465.jpg";
 import Footer from "./Footer";
@@ -10,13 +8,29 @@ import MainNav from "./MainNav";
 import { toast, Toaster } from "react-hot-toast";
 
 export default function AllProducts() {
-  const products = useSelector((state) => state.ShopReducer);
-  const dispatch = useDispatch();
+  const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch products from the provided endpoint
   useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          "https://e-commerce-project-production-2e7f.up.railway.app/user/allproduct"
+        );
+        setProducts(response.data); // Assuming response.data is an array of products
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+        setLoading(false);
+        toast.error("Error fetching products");
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Add to cart function (localStorage) with react-hot-toast and login check
   const handleAddToCart = (item) => {
@@ -54,12 +68,13 @@ export default function AllProducts() {
     products && products.length > 0
       ? products.filter(
           (product) =>
-            product.title.toLowerCase().includes(search.toLowerCase()) ||
-            product.name.toLowerCase().includes(search.toLowerCase())
+            product.title?.toLowerCase().includes(search.toLowerCase()) ||
+            product.name?.toLowerCase().includes(search.toLowerCase()) ||
+            product.category?.toLowerCase().includes(search.toLowerCase())
         )
       : [];
 
-  // Card style (same as HomeProducts)
+  // Card style
   const cardStyle = {
     width: "18rem",
     position: "relative",
@@ -68,7 +83,7 @@ export default function AllProducts() {
     boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
     border: "none",
     margin: "auto",
-    minHeight: "420px",
+    minHeight: "460px", // Increased to accommodate extra fields
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
@@ -84,24 +99,33 @@ export default function AllProducts() {
         text="Try our premium organic food selection for a healthier lifestyle. Limited time offers available!"
         buttonLabel="Shop Organic"
       />
-      <section className="container my-5">
+      <section className="container-fluid my-5">
         <div className="row mb-4">
           <div className="col-12 col-md-6 mx-auto">
             <input
               type="text"
               className="form-control form-control-lg"
-              placeholder="Search for products..."
+              placeholder="Search for products by name, title, or category..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search for products"
             />
           </div>
         </div>
         <div className="row">
-          {filteredProducts && filteredProducts.length > 0 ? (
-            filteredProducts.map((product, idx) => (
+          {loading ? (
+            <div className="col-12 text-center">
+              <p>Loading products...</p>
+            </div>
+          ) : error ? (
+            <div className="col-12 text-center">
+              <p className="text-danger">{error}</p>
+            </div>
+          ) : filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
               <div
-                className="col-md-4 col-sm-6 col-12 mb-4 d-flex"
-                key={product.id || idx}
+                className="col-md-3 col-sm-6 col-12 mb-4 d-flex"
+                key={product.id}
               >
                 <div style={cardStyle} className="card h-100">
                   <div className="position-absolute top-0 start-0 p-2 d-flex justify-content-between w-100">
@@ -117,14 +141,19 @@ export default function AllProducts() {
                         style={{ cursor: "pointer", color: "#DB4444" }}
                         onClick={() => handleAddToFavorites(product)}
                         title="Add to Favorites"
+                        aria-label="Add to favorites"
                       ></i>
-                      <i className="far fa-eye"></i>
+                      <i
+                        className="far fa-eye"
+                        title="View product"
+                        aria-label="View product"
+                      ></i>
                     </div>
                   </div>
                   <img
                     src={product.photo}
                     className="card-img-top"
-                    alt={product.title}
+                    alt={product.title || "Product Image"}
                     style={{
                       height: "200px",
                       objectFit: "cover",
@@ -135,6 +164,9 @@ export default function AllProducts() {
                     <h5 className="card-title">{product.title}</h5>
                     <p className="card-text mb-1">{product.name}</p>
                     <p className="card-text mb-1">
+                      <strong>Category:</strong> {product.category}
+                    </p>
+                    <p className="card-text mb-1">
                       <strong>Price:</strong> {product.price}
                     </p>
                     <p className="card-text mb-1">
@@ -142,6 +174,11 @@ export default function AllProducts() {
                     </p>
                     <p className="card-text mb-1">
                       <strong>Rate:</strong> {product.rate} ⭐
+                    </p>
+                    <p className="card-text mb-1 text-muted">
+                      {product.description.length > 60
+                        ? `${product.description.substring(0, 60)}...`
+                        : product.description}
                     </p>
                     <button
                       style={{

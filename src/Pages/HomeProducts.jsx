@@ -1,20 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
-import fetchData from "../Redux/ActionCreator";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "react-hot-toast";
+import axios from "axios";
 
 export default function HomeProducts() {
   const nav = useNavigate();
-  const products = useSelector((state) => state.ShopReducer);
-  const dispatch = useDispatch();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch products from the endpoint
   useEffect(() => {
-    dispatch(fetchData());
-  }, [dispatch]);
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          "https://e-commerce-project-production-2e7f.up.railway.app/user/allproduct"
+        );
+        setProducts(response.data); // Assuming response.data is an array of products
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch products. Please try again later.");
+        setLoading(false);
+        toast.error("Error fetching products");
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const navButtonStyle = {
     width: "46px",
@@ -113,18 +127,37 @@ export default function HomeProducts() {
         </div>
 
         <div className="row">
-          <Marquee speed={40} pauseOnHover={true}>
-            {/* {products.map((product) => {
-              const extractImageId = (url) => {
-                const match = url.match(/\/d\/(.*?)\//);
-                return match ? match[1] : "";
-              };
-
-              return (
+          {loading ? (
+            <div className="col-12 text-center">
+              <p>Loading products...</p>
+            </div>
+          ) : error ? (
+            <div className="col-12 text-center">
+              <p className="text-danger">{error}</p>
+            </div>
+          ) : products.length > 0 ? (
+            <Marquee speed={40} pauseOnHover={true}>
+              {products.map((product) => (
                 <div key={product.id} className="mx-3">
-                  <div className="card relative" style={{ width: "18rem" }}>
-                    <div className="absolute top-0 left-0 p-2 d-flex justify-content-between w-100">
-                      <div className="bg-danger p-1 rounded text-white">
+                  <div
+                    className="card relative"
+                    style={{
+                      width: "18rem",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                      boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
+                      border: "none",
+                      minHeight: "420px",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div className="position-absolute top-0 start-0 p-2 d-flex justify-content-between w-100">
+                      <div
+                        className="bg-danger p-1 rounded text-white"
+                        style={{ fontSize: "0.95rem" }}
+                      >
                         Offer {product.discount}
                       </div>
                       <div className="d-flex gap-2">
@@ -133,20 +166,31 @@ export default function HomeProducts() {
                           style={{ cursor: "pointer", color: "#DB4444" }}
                           onClick={() => handleAddToFavorites(product)}
                           title="Add to Favorites"
+                          aria-label="Add to favorites"
                         ></i>
-                        <i className="far fa-eye"></i>
+                        <i
+                          className="far fa-eye"
+                          title="View product"
+                          aria-label="View product"
+                        ></i>
                       </div>
                     </div>
-
                     <img
                       src={product.photo}
-                      alt={product.title}
+                      alt={product.title || "Product Image"}
                       className="card-img-top"
-                      style={{ height: "200px", objectFit: "cover" }}
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                        borderRadius: "8px 8px 0 0",
+                      }}
                     />
-                    <div className="card-body">
+                    <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{product.title}</h5>
                       <p className="card-text mb-1">{product.name}</p>
+                      <p className="card-text mb-1">
+                        <strong>Category:</strong> {product.category}
+                      </p>
                       <p className="card-text mb-1">
                         <strong>Price:</strong> {product.price}
                       </p>
@@ -156,12 +200,22 @@ export default function HomeProducts() {
                       <p className="card-text mb-1">
                         <strong>Rate:</strong> {product.rate} ⭐
                       </p>
+                      <p className="card-text mb-1 text-muted">
+                        {product.description.length > 60
+                          ? `${product.description.substring(0, 60)}...`
+                          : product.description}
+                      </p>
                       <button
                         onClick={() => handleAddToCart(product)}
                         style={{
                           width: "100%",
                           height: "41px",
                           backgroundColor: "rgba(0, 0, 0, 1)",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "6px",
+                          marginTop: "auto",
+                          fontWeight: "500",
                         }}
                         className="btn btn-primary w-100"
                       >
@@ -170,17 +224,19 @@ export default function HomeProducts() {
                     </div>
                   </div>
                 </div>
-              );
-            })} */}
-          </Marquee>
+              ))}
+            </Marquee>
+          ) : (
+            <div className="col-12 text-center">
+              <p>No products available.</p>
+            </div>
+          )}
         </div>
 
         <div className="row mt-5">
           <div className="col-12 text-center">
-            <button
-              onClick={() => {
-                nav("/all-products");
-              }}
+            <motion.button
+              onClick={() => nav("/all-products")}
               style={{
                 width: "234px",
                 height: "56px",
@@ -191,9 +247,11 @@ export default function HomeProducts() {
                 fontWeight: "500",
                 color: "white",
               }}
+              whileHover="hover"
+              whileTap="tap"
             >
               View All Products
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
