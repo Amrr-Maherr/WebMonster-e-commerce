@@ -5,29 +5,67 @@ import MainNav from "../../Component/MainNav";
 import GoogleImg from "../../Assets/Icon-Google.png";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
 export default function SignUp() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    // Save all data in one object in localStorage
+
+    // ✅ التحقق من الحقول
+    if (!name || !emailOrPhone || !password || !mobile) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
     const userData = {
-      name,
-      emailOrPhone,
+      Name: name,
+      email: emailOrPhone,
       password,
+      mobile,
     };
-    localStorage.setItem("signup_data", JSON.stringify(userData));
-    // You can add a success message or redirect here if needed
-    navigate("/login")
+
+    try {
+      const response = await fetch(
+        "https://e-commerce-project-production-2e7f.up.railway.app/user/signin",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Account created successfully!");
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        toast.error(data.message || "Sign up failed");
+      }
+    } catch (error) {
+      toast.error("An error occurred: " + error.message);
+    }
   };
 
   return (
     <>
       <MainNav />
+      <Toaster position="top-center" reverseOrder={false} />
       <section style={{ margin: "50px 0px" }}>
         <div className="container">
           <div className="row">
@@ -101,11 +139,12 @@ export default function SignUp() {
                     }}
                     type="email"
                     className="w-100"
-                    placeholder="Email or Phone Number"
+                    placeholder="Email"
                     value={emailOrPhone}
                     onChange={(e) => setEmailOrPhone(e.target.value)}
                   />
                 </div>
+
                 <div>
                   <input
                     style={{
@@ -120,6 +159,23 @@ export default function SignUp() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <input
+                    style={{
+                      border: "none",
+                      borderBottom: "1px solid black",
+                      outline: "none",
+                      padding: "10px 0px",
+                      marginBottom: "40px",
+                    }}
+                    type="text"
+                    className="w-100"
+                    placeholder="Mobile Number"
+                    value={mobile}
+                    onChange={(e) => setMobile(e.target.value)}
                   />
                 </div>
 

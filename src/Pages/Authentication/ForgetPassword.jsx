@@ -14,9 +14,18 @@ export default function ForgetPassword() {
     e.preventDefault();
 
     if (!emailOrPhone.trim()) {
-      toast.error("Please enter your email or phone number.");
+      toast.error("Please enter your email.");
       return;
     }
+
+    // ✅ تحقق من صحة الإيميل (اختياري حسب الـ API)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailOrPhone)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    const toastId = toast.loading("Sending reset link...");
 
     try {
       const response = await fetch(
@@ -39,6 +48,8 @@ export default function ForgetPassword() {
         data = text;
       }
 
+      toast.dismiss(toastId);
+
       if (response.ok) {
         toast.success(data?.message || "Reset link sent! Check your email.");
         setTimeout(() => navigate("/reset-password"), 2000);
@@ -46,6 +57,7 @@ export default function ForgetPassword() {
         toast.error(data?.message || data || "Something went wrong.");
       }
     } catch (error) {
+      toast.dismiss(toastId);
       toast.error("An error occurred. Please try again.");
       console.error("Forget password error:", error);
     }
@@ -107,7 +119,7 @@ export default function ForgetPassword() {
                       color: "black",
                     }}
                   >
-                    Enter your email or phone number to reset your password
+                    Enter your email to reset your password
                   </p>
                 </div>
 
@@ -122,7 +134,7 @@ export default function ForgetPassword() {
                     }}
                     type="text"
                     className="w-100"
-                    placeholder="Email or Phone Number"
+                    placeholder="Email"
                     value={emailOrPhone}
                     onChange={(e) => setEmailOrPhone(e.target.value)}
                     aria-label="Email or Phone Number"
@@ -146,7 +158,7 @@ export default function ForgetPassword() {
                     type="submit"
                     aria-label="Send Reset Link"
                   >
-                    Send Reset Link
+                    Send Link
                   </motion.button>
                   <Link
                     to="/login"

@@ -56,7 +56,7 @@ export default function Login() {
 
       if (response.ok) {
         toast.success("Login successful!");
-
+        console.log("Login successful:", data);
         if (typeof data === "object" && data.token) {
           localStorage.setItem("token", data.token);
         }
