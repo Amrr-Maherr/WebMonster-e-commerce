@@ -204,7 +204,6 @@ export default function ResetPassword() {
                   >
                     Reset Password
                   </motion.button>
-
                   <Link
                     to="/"
                     style={{
