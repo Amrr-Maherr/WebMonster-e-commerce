@@ -2,25 +2,49 @@ import React, { useState, useEffect } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 function Cart() {
   const nav = useNavigate();
   const [cartItems, setCartItems] = useState([]);
 
-  // ✅ تحميل البيانات من localStorage عند أول تحميل
   useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartWithQuantities = storedCart.map((item) => ({
-      ...item,
-      quantity: item.quantity || 1,
-    }));
-    setCartItems(cartWithQuantities);
+    const fetchCartItems = async () => {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+
+      if (!userId || !token) {
+        toast.error("You must be logged in to view the cart.");
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          `https://e-commerce-project-production-2e7f.up.railway.app/user/ShowCart/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const dataWithQuantities = res.data.map((item) => ({
+          ...item,
+          quantity: item.quantity || 1,
+        }));
+        setCartItems(dataWithQuantities);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+        toast.error("Failed to load cart items.");
+      }
+    };
+
+    fetchCartItems();
   }, []);
 
-  // استخراج الرقم من السعر مثل "14.99$" => 14.99
   const getPriceNumber = (price) => {
     if (!price) return 0;
-    // يحذف أي رمز غير رقم أو نقطة
     const num = parseFloat(price.toString().replace(/[^0-9.]/g, ""));
     return isNaN(num) ? 0 : num;
   };
@@ -29,57 +53,69 @@ function Cart() {
     return cartItems
       .reduce(
         (total, item) =>
-          total + getPriceNumber(item.price) * (parseInt(item.quantity) || 1),
+          total +
+          getPriceNumber(item.productId.price) * (parseInt(item.quantity) || 1),
         0
       )
       .toFixed(2);
   };
 
-  // التعديل هنا: حذف المنتج من الكارت ومن localStorage
-  const removeItem = (itemId) => {
-    const updatedCart = cartItems.filter((item) => item.id !== itemId);
-    setCartItems(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
+  // ✅ حذف منتج من السلة
+  const handleDelete = async (productId) => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-  const updateQuantity = (itemId, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
+    try {
+      await axios.delete(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/deleteproduct/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: { productId },
+        }
+      );
 
-  const increaseQuantity = (itemId) => {
-    const item = cartItems.find((item) => item.id === itemId);
-    updateQuantity(itemId, (parseInt(item.quantity) || 1) + 1);
-  };
-
-  const decreaseQuantity = (itemId) => {
-    const item = cartItems.find((item) => item.id === itemId);
-    if ((parseInt(item.quantity) || 1) > 1) {
-      updateQuantity(itemId, (parseInt(item.quantity) || 1) - 1);
+      setCartItems((prev) =>
+        prev.filter((item) => item.productId._id !== productId)
+      );
+      toast.success("Product removed.");
+    } catch (err) {
+      toast.error("Failed to remove product.");
     }
   };
 
-  const quantityBtnStyle = {
-    padding: "0.2rem 0.5rem",
-    fontSize: "0.8rem",
-    borderRadius: "50%",
-    border: "none",
-    backgroundColor: "rgba(219, 68, 68, 1)",
-    color: "white",
-    cursor: "pointer",
-    lineHeight: 1,
-  };
+  // ✅ تعديل الكمية
+  const updateQuantity = async (productId, newQuantity) => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-  const removeFavoriteBtnStyle = {
-    borderRadius: "25px",
-    padding: "0.3rem 0.75rem",
-  };
+    if (newQuantity < 1) return;
 
-  const removeFavoriteBtnHoverStyle = {
-    backgroundColor: "#f8f9fa",
+    try {
+      await axios.put(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/updateproduct/${userId}`,
+        {
+          productId,
+          quantity: newQuantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.productId._id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
+        )
+      );
+    } catch (err) {
+      toast.error("Failed to update quantity.");
+    }
   };
 
   const checkoutButtonStyle = {
@@ -119,12 +155,12 @@ function Cart() {
                   </thead>
                   <tbody>
                     {cartItems.map((item) => (
-                      <tr key={item.id}>
+                      <tr key={item._id}>
                         <td>
                           <div className="d-flex align-items-center">
                             <img
-                              src={item.photo}
-                              alt={item.name}
+                              src={item.productId.photo}
+                              alt={item.productId.name}
                               style={{
                                 width: "80px",
                                 height: "80px",
@@ -133,50 +169,51 @@ function Cart() {
                               className="rounded me-3"
                             />
                             <div>
-                              <h6 className="mb-1">{item.name}</h6>
+                              <h6 className="mb-1">{item.productId.name}</h6>
                             </div>
                           </div>
                         </td>
-                        <td>${getPriceNumber(item.price)}</td>
+                        <td>${getPriceNumber(item.productId.price)}</td>
                         <td>
-                          <div className="d-flex align-items-center">
+                          <div className="d-flex align-items-center gap-2">
                             <button
-                              style={quantityBtnStyle}
-                              onClick={() => decreaseQuantity(item.id)}
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.productId._id,
+                                  item.quantity - 1
+                                )
+                              }
                             >
-                              <i className="fas fa-minus"></i>
+                              –
                             </button>
-                            <span className="mx-2">{item.quantity}</span>
+                            <span>{item.quantity}</span>
                             <button
-                              style={quantityBtnStyle}
-                              onClick={() => increaseQuantity(item.id)}
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() =>
+                                updateQuantity(
+                                  item.productId._id,
+                                  item.quantity + 1
+                                )
+                              }
                             >
-                              <i className="fas fa-plus"></i>
+                              +
                             </button>
                           </div>
                         </td>
                         <td>
                           $
                           {(
-                            getPriceNumber(item.price) *
+                            getPriceNumber(item.productId.price) *
                             (parseInt(item.quantity) || 1)
                           ).toFixed(2)}
                         </td>
                         <td>
                           <button
-                            className="btn btn-outline-secondary btn-sm"
-                            style={removeFavoriteBtnStyle}
-                            onMouseOver={(e) => {
-                              e.currentTarget.style.backgroundColor =
-                                removeFavoriteBtnHoverStyle.backgroundColor;
-                            }}
-                            onMouseOut={(e) => {
-                              e.currentTarget.style.backgroundColor = null;
-                            }}
-                            onClick={() => removeItem(item.id)}
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDelete(item.productId._id)}
                           >
-                            <i className="bi bi-trash me-1"></i>
-                            Remove
+                            Delete
                           </button>
                         </td>
                       </tr>
@@ -191,9 +228,7 @@ function Cart() {
               Total: <span className="text-dark">${calculateTotal()}</span>
             </h5>
             <button
-              onClick={() => {
-                nav("/check-out");
-              }}
+              onClick={() => nav("/check-out")}
               className="btn"
               style={checkoutButtonStyle}
             >

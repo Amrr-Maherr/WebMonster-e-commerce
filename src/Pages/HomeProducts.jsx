@@ -14,7 +14,6 @@ export default function HomeProducts({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch products from the endpoint
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -22,7 +21,7 @@ export default function HomeProducts({
         const response = await axios.get(
           "https://e-commerce-project-production-2e7f.up.railway.app/user/allproduct"
         );
-        setProducts(response.data.slice(0, productCount)); // Limit to productCount
+        setProducts(response.data.slice(0, productCount));
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch products. Please try again later.");
@@ -33,54 +32,51 @@ export default function HomeProducts({
     fetchProducts();
   }, [productCount]);
 
-  const navButtonStyle = {
-    width: "46px",
-    height: "46px",
-    borderRadius: "50%",
-    border: "none",
-    backgroundColor: "rgba(245, 245, 245, 1)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "1.2rem",
-    color: "#555",
-    cursor: "pointer",
-    boxShadow: "0px 2px 5px rgba(0,0,0,0.2)",
-  };
-
   const navButtonVariants = {
     hover: {
       scale: 1.2,
       backgroundColor: "rgba(230, 230, 230, 1)",
-      transition: {
-        duration: 0.2,
-        ease: "easeInOut",
-      },
+      transition: { duration: 0.2, ease: "easeInOut" },
     },
-    tap: {
-      scale: 0.9,
-    },
+    tap: { scale: 0.9 },
   };
 
-  // Add To Cart function with react-hot-toast and login check
-  const handleAddToCart = (item) => {
-    const userData = JSON.parse(localStorage.getItem("signup_data"));
-    if (!userData) {
+  const handleAddToCart = async (item) => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
       toast.error("You must be logged in to add products to the cart.");
       return;
     }
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const isAlreadyInCart = existingCart.some((p) => p.id === item.id);
-    if (isAlreadyInCart) {
-      toast.error("This product is already in the cart");
-      return;
-    }
-    const updatedCart = [...existingCart, item];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    toast.success("Product added to cart");
-  };
 
-  // Add to favorites function (localStorage)
+    try {
+      await axios.post(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/addtocart/${userId}`,
+        {
+          productId: item._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Product added to cart successfully!");
+    } catch (error) {
+      console.error(
+        "Error adding to cart:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "Failed to add product to cart."
+      );
+    }
+  };
+  
+  
+
+  // ✅ المفضلة (ما زالت localStorage)
   const handleAddToFavorites = (item) => {
     const existingFavs = JSON.parse(localStorage.getItem("favorites")) || [];
     const isAlreadyFav = existingFavs.some((p) => p.id === item.id);
@@ -98,7 +94,6 @@ export default function HomeProducts({
       <section>
         <Toaster position="top-center" />
         <div className="container my-5">
-          {/* Section Title */}
           <div className="row mb-4">
             <div className="col-12">
               <div className="d-flex align-items-center gap-4">
@@ -116,8 +111,7 @@ export default function HomeProducts({
                     fontWeight: "600",
                     color: "rgba(219, 68, 68, 1)",
                   }}
-                  className="全世界
-                p-0 m-0"
+                  className="p-0 m-0"
                 >
                   Today’s
                 </p>
@@ -177,12 +171,16 @@ export default function HomeProducts({
                             aria-label="Add to favorites"
                           ></i>
 
-                          {/* ✅ الأيقونة فقط داخل <Link> */}
                           <Link
-                            to={`/product/${product.id}`} // تأكد إنك تستخدم `_id` وليس `id`
+                            to={`/product/${product.id}`}
                             title="View product"
                             aria-label="View product"
-                            style={{ color: "inherit",display:"flex",alignItems:"flex-start",textDecoration:"none" }}
+                            style={{
+                              color: "inherit",
+                              display: "flex",
+                              alignItems: "flex-start",
+                              textDecoration: "none",
+                            }}
                           >
                             <i
                               className="far fa-eye"

@@ -59,6 +59,7 @@ export default function Login() {
         console.log("Login successful:", data);
         if (typeof data === "object" && data.token) {
           localStorage.setItem("token", data.token);
+          localStorage.setItem("userId", data.userID);
         }
 
         navigate("/");

@@ -1,37 +1,53 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Component/Footer";
 import MainNav from "../Component/MainNav";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 const Checkout = () => {
-  // الحالة للاحتفاظ بالمنتجات
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // جلب البيانات من localStorage
-    const cartData = localStorage.getItem("cart");
-    if (cartData) {
-      try {
-        const parsed = JSON.parse(cartData);
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
 
-        // تحويل البيانات حسب التنسيق المطلوب
-        const formattedProducts = parsed.map((item) => ({
-          id: item.id,
-          name: item.name,
-          price: parseFloat(item.price.replace("$", "")), // نحول السعر لنوع رقم
-          quantity: 1, // ممكن تعدل لو عندك كمية
-          image: item.photo, // استخدم خاصية photo
-          title: item.title,
-          discount: item.discount,
-          rate: item.rate,
-        }));
-        setProducts(formattedProducts);
-      } catch (e) {
-        console.error("Error parsing cart data:", e);
-      }
+    if (!userId || !token) {
+      Swal.fire("Error", "User not authenticated.", "error");
+      return;
     }
+
+    const fetchCart = async () => {
+      try {
+        const res = await axios.get(
+          `https://e-commerce-project-production-2e7f.up.railway.app/user/ShowCart/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const formattedProducts = res.data.map((item) => ({
+          id: item.productId._id,
+          name: item.productId.name,
+          price: parseFloat(item.productId.price.replace("$", "")),
+          quantity: item.quantity || 1,
+          image: item.productId.photo,
+          title: item.productId.title,
+          discount: item.productId.discount,
+          rate: item.productId.rate,
+        }));
+
+        setProducts(formattedProducts);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+        Swal.fire("Error", "Failed to load cart data.", "error");
+      }
+    };
+
+    fetchCart();
   }, []);
 
-  // الأنماط inline كما طلبت
   const containerStyle = {
     fontFamily: '"Open Sans", sans-serif',
     backgroundColor: "#f8f9fa",
@@ -102,27 +118,6 @@ const Checkout = () => {
     color: "#212529",
   };
 
-  const formGroupStyle = {
-    marginBottom: "15px",
-  };
-
-  const formLabelStyle = {
-    fontSize: "0.95rem",
-    fontWeight: "500",
-    color: "#495057",
-    marginBottom: "5px",
-    display: "block",
-  };
-
-  const formInputStyle = {
-    width: "100%",
-    padding: "10px 12px",
-    fontSize: "1rem",
-    border: "1px solid #ced4da",
-    borderRadius: "4px",
-    outline: "none",
-  };
-
   const orderSummaryStyle = {
     padding: "15px",
   };
@@ -132,17 +127,6 @@ const Checkout = () => {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "8px",
-  };
-
-  const summaryLabelStyle = {
-    fontSize: "1rem",
-    color: "#495057",
-  };
-
-  const summaryValueStyle = {
-    fontSize: "1.1rem",
-    fontWeight: "bold",
-    color: "#212529",
   };
 
   const totalLabelStyle = {
@@ -156,7 +140,6 @@ const Checkout = () => {
   };
 
   const checkoutButtonStyle = {
-    backgroundColor: "rgba(219, 68, 68, 1)",
     color: "white",
     border: "none",
     borderRadius: "4px",
@@ -170,33 +153,10 @@ const Checkout = () => {
     textDecoration: "none",
   };
 
-  const additionalInfoStyle = {
-    textAlign: "center",
-    marginTop: "20px",
-    color: "#6c757d",
-  };
-
   const iconStyle = {
     marginRight: "8px",
   };
 
-  const paymentOptionsStyle = {
-    padding: "15px",
-  };
-
-  const paymentOptionStyle = {
-    display: "flex",
-    alignItems: "center",
-    marginBottom: "10px",
-  };
-
-  const paymentIconStyle = {
-    fontSize: "24px",
-    marginRight: "10px",
-    color: "#495057",
-  };
-
-  // حساب المجموع الفرعي بناء على المنتجات من localStorage
   const subtotal = products.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
@@ -205,20 +165,71 @@ const Checkout = () => {
   const discount = 2.0;
   const total = subtotal + shippingCost - discount;
 
+  const confirmOrder = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      Swal.fire("Error", "User not authenticated.", "error");
+      return;
+    }
+
+    try {
+      await axios.put(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/verify/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Swal.fire("Success", "Order confirmed successfully!", "success");
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Something went wrong.", "error");
+    }
+  };
+
+  const cancelOrder = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      Swal.fire("Error", "User not authenticated.", "error");
+      return;
+    }
+
+    try {
+      await axios.put(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/cancel/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setProducts([]);
+      Swal.fire("Cancelled", "Order cancelled successfully.", "warning");
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Something went wrong.", "error");
+    }
+  };
+
   return (
     <>
       <MainNav />
       <div style={containerStyle}>
         <div className="container">
           <div className="row">
-            {/* معلومات الطلب (الجانب الأيمن) */}
             <div className="col-md-8">
               <div style={cardStyle}>
                 <div style={cardHeaderStyle}>
-                  <h5 style={cardTitleStyle}>
-                    <i className="fas fa-shopping-cart" style={iconStyle}></i>
-                    Shopping Cart
-                  </h5>
+                  <h5 style={cardTitleStyle}>Shopping Cart</h5>
                 </div>
                 <div style={productListStyle}>
                   {products.length > 0 ? (
@@ -245,63 +256,8 @@ const Checkout = () => {
                   )}
                 </div>
               </div>
-
-              <div style={cardStyle}>
-                <div style={cardHeaderStyle}>
-                  <h5 style={cardTitleStyle}>Shipping Information</h5>
-                </div>
-                <div style={{ padding: "15px" }}>
-                  <div style={formGroupStyle}>
-                    <label htmlFor="name" style={formLabelStyle}>
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      style={formInputStyle}
-                      placeholder="Your Name"
-                    />
-                  </div>
-                  <div style={formGroupStyle}>
-                    <label htmlFor="address" style={formLabelStyle}>
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      style={formInputStyle}
-                      placeholder="Your Address"
-                    />
-                  </div>
-                  {/* المزيد من الحقول حسب الحاجة */}
-                </div>
-              </div>
-
-              <div style={cardStyle}>
-                <div style={cardHeaderStyle}>
-                  <h5 style={cardTitleStyle}>Payment Information</h5>
-                </div>
-                <div style={paymentOptionsStyle}>
-                  <div style={paymentOptionStyle}>
-                    <i className="fab fa-cc-visa" style={paymentIconStyle}></i>
-                    <span>Visa</span>
-                  </div>
-                  <div style={paymentOptionStyle}>
-                    <i
-                      className="fab fa-cc-mastercard"
-                      style={paymentIconStyle}
-                    ></i>
-                    <span>Mastercard</span>
-                  </div>
-                  <div style={paymentOptionStyle}>
-                    <i className="fab fa-paypal" style={paymentIconStyle}></i>
-                    <span>PayPal</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
-            {/* ملخص الطلب (الجانب الأيسر) */}
             <div className="col-md-4">
               <div style={cardStyle}>
                 <div style={cardHeaderStyle}>
@@ -309,44 +265,47 @@ const Checkout = () => {
                 </div>
                 <div style={orderSummaryStyle}>
                   <div style={summaryItemStyle}>
-                    <span style={summaryLabelStyle}>Subtotal:</span>
-                    <span style={summaryValueStyle}>
-                      ${subtotal.toFixed(2)}
-                    </span>
+                    <span>Subtotal:</span>
+                    <span>${subtotal.toFixed(2)}</span>
                   </div>
                   <div style={summaryItemStyle}>
-                    <span style={summaryLabelStyle}>Shipping:</span>
-                    <span style={summaryValueStyle}>
-                      ${shippingCost.toFixed(2)}
-                    </span>
+                    <span>Shipping:</span>
+                    <span>${shippingCost.toFixed(2)}</span>
                   </div>
                   <div style={summaryItemStyle}>
-                    <span style={summaryLabelStyle}>Discount:</span>
-                    <span style={summaryValueStyle}>
-                      -${discount.toFixed(2)}
-                    </span>
+                    <span>Discount:</span>
+                    <span>-${discount.toFixed(2)}</span>
                   </div>
                   <hr />
                   <div style={summaryItemStyle}>
                     <span style={totalLabelStyle}>Total:</span>
                     <span style={totalValueStyle}>${total.toFixed(2)}</span>
                   </div>
-                  <a href="#" style={checkoutButtonStyle}>
-                    <i className="fas fa-lock" style={iconStyle}></i>
-                    Secure Checkout
-                  </a>
-                </div>
-              </div>
 
-              <div style={additionalInfoStyle}>
-                <p>
-                  <i className="fas fa-truck" style={iconStyle}></i>
-                  Fast & Reliable Delivery
-                </p>
-                <p>
-                  <i className="fas fa-gift" style={iconStyle}></i>
-                  Free Gift with Every Order
-                </p>
+                  <button
+                    onClick={confirmOrder}
+                    style={{
+                      ...checkoutButtonStyle,
+                      marginTop: "10px",
+                      backgroundColor: "#28a745",
+                    }}
+                  >
+                    <i className="fas fa-check-circle" style={iconStyle}></i>
+                    Confirm Order
+                  </button>
+
+                  <button
+                    onClick={cancelOrder}
+                    style={{
+                      ...checkoutButtonStyle,
+                      marginTop: "10px",
+                      backgroundColor: "#dc3545",
+                    }}
+                  >
+                    <i className="fas fa-times-circle" style={iconStyle}></i>
+                    Cancel Order
+                  </button>
+                </div>
               </div>
             </div>
           </div>
