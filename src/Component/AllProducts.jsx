@@ -6,7 +6,7 @@ import SubNav from "./SubNav";
 import MainNav from "./MainNav";
 import { toast, Toaster } from "react-hot-toast";
 import VideoBackgroundSection from "./VideoBackgroundSection";
-import { Link } from "react-router-dom"; // ✅ إضافة Link
+import { Link } from "react-router-dom";
 
 export default function AllProducts() {
   const [products, setProducts] = useState([]);
@@ -32,23 +32,39 @@ export default function AllProducts() {
     fetchProducts();
   }, []);
 
-  const handleAddToCart = (item) => {
-    const userData = JSON.parse(localStorage.getItem("signup_data"));
-    if (!userData) {
+  // ✅ الكارت من API - بدون localStorage
+  const handleAddToCart = async (item) => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
       toast.error("You must be logged in to add products to the cart.");
       return;
     }
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const isAlreadyInCart = existingCart.some((p) => p.id === item.id);
-    if (isAlreadyInCart) {
-      toast.error("This product is already in the cart");
-      return;
+
+    try {
+      await axios.post(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/addtocart/${userId}`,
+        { productId: item._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      toast.success("Product added to cart successfully!");
+    } catch (error) {
+      console.error(
+        "Error adding to cart:",
+        error.response?.data || error.message
+      );
+      toast.error(
+        error.response?.data?.message || "Failed to add product to cart."
+      );
     }
-    const updatedCart = [...existingCart, item];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-    toast.success("Product added to cart");
   };
 
+  // ✅ المفضلة - localStorage
   const handleAddToFavorites = (item) => {
     const existingFavs = JSON.parse(localStorage.getItem("favorites")) || [];
     const isAlreadyFav = existingFavs.some((p) => p.id === item.id);
@@ -95,7 +111,7 @@ export default function AllProducts() {
         videoSrc="https://videocdn.cdnpk.net/videos/ef621f86-8584-4aa0-b5db-e07a56d0fe23/horizontal/previews/clear/small.mp4?token=exp=1751839420~hmac=3ca5e4a38026d7ac93eae1a6e612d76d30116c2facb45835b9ef6ee4919aff33"
       />
 
-      <section className="container-fluid my-5">
+      <section className="container my-5">
         <div className="row mb-4">
           <div className="col-12 col-md-6 mx-auto">
             <input
@@ -141,7 +157,6 @@ export default function AllProducts() {
                         aria-label="Add to favorites"
                       ></i>
 
-                      {/* ✅ رابط تفاصيل المنتج داخل أيقونة العين */}
                       <Link
                         to={`/product/${product.id}`}
                         title="View product"

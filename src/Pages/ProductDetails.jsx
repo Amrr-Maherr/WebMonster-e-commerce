@@ -31,6 +31,41 @@ export default function ProductDetails() {
       });
   }, [id]);
 
+  const handleAddToCart = async () => {
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      toast.error("You must be logged in to add to cart.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/addtocart/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ productId: product._id }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Product added to cart");
+      } else {
+        toast.error(data.message || "Failed to add product to cart.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error adding to cart");
+    }
+  };
+
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -61,7 +96,7 @@ export default function ProductDetails() {
 
   return (
     <>
-      <MainNav/>
+      <MainNav />
       <div className="container py-5">
         <div className="row g-5 align-items-center">
           <div className="col-md-6 text-center">
@@ -82,16 +117,14 @@ export default function ProductDetails() {
             <p className="mb-2">
               <strong>Rating:</strong> ⭐ {rate} / 5
             </p>
-            <p className="mb-2">
-              <strong>Sold:</strong> {soldCount} item
-              {soldCount !== 1 ? "s" : ""}
-            </p>
             <p className="mb-4">{description}</p>
-            <button className="btn btn-primary px-4">Add to Cart</button>
+            <button className="btn btn-primary px-4" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

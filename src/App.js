@@ -19,6 +19,7 @@ import AllProducts from './Component/AllProducts';
 import { Toaster } from 'react-hot-toast';
 import ForgetPassword from './Pages/Authentication/ForgetPassword';
 import ResetPassword from './Pages/Authentication/ResetPassword';
+import CategoryPage from './Pages/CategoryPage';
 function App() {
   return (
     <>
@@ -40,6 +41,7 @@ function App() {
             <Route path="/Forget-Password" element={<ForgetPassword />} />
             <Route path="/Reset-Password" element={<ResetPassword />} />
             <Route path="/product/:id" element={<ProductDetails />} />
+            <Route path="/category/:category" element={<CategoryPage />} />
           </Routes>
         </div>
       </BrowserRouter>
