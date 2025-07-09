@@ -62,7 +62,7 @@ export default function Login() {
           localStorage.setItem("userId", data.userID);
         }
 
-        navigate("/");
+        navigate("/Home");
       } else {
         toast.error(data?.message || data || "Login failed.");
       }

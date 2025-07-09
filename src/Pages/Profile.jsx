@@ -21,56 +21,75 @@ export default function Profile() {
     },
   };
 
-  // State for form fields
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
 
-  // Load profile data from localStorage on mount
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("profile_data"));
     if (profile) {
-      setFirstName(profile.firstName || "");
-      setLastName(profile.lastName || "");
+      setName(profile.name || "");
       setEmail(profile.email || "");
-      setAddress(profile.address || "");
     }
   }, []);
 
-  // Save handler
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
 
-    // Password validation (if user wants to change password)
-    if (password || confirmPassword) {
-      if (password !== confirmPassword) {
+    if (newPassword || confirmPassword) {
+      if (newPassword !== confirmPassword) {
         toast.error("Passwords do not match.");
         return;
       }
-      if (password.length < 6) {
+      if (newPassword.length < 6) {
         toast.error("Password must be at least 6 characters.");
         return;
       }
     }
 
-    // Save profile data
-    const profileData = {
-      firstName,
-      lastName,
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      toast.error("User not authenticated.");
+      return;
+    }
+
+    const payload = {
+      Name: name,
       email,
-      address,
-      // Don't save password in localStorage for real apps!
-      password: password ? password : undefined,
+      currentPassword,
+      newPassword,
+      confirmPassword,
     };
+
     try {
+      const res = await fetch(
+        `https://e-commerce-project-production-2e7f.up.railway.app/user/updateprofile/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to update profile.");
+
+      toast.success("Profile updated successfully!");
+
+      const profileData = {
+        name,
+        email,
+      };
       localStorage.setItem("profile_data", JSON.stringify(profileData));
-      toast.success("Profile saved successfully!");
     } catch (err) {
-      toast.error("Failed to save profile.");
+      console.error(err);
+      toast.error("Failed to update profile.");
     }
   };
 
@@ -79,296 +98,115 @@ export default function Profile() {
       <Toaster position="top-center" />
       <MainNav />
       <section>
-        <div className="container">
-          <div className="row">
-            <div className="col-12" style={{ margin: "80px 0px" }}>
-              <p className="text-end">Welcome! {firstName || "User"}</p>
+        <div
+          className="container d-flex justify-content-center align-items-center"
+          style={{ minHeight: "80vh" }}
+        >
+          <motion.form
+            className="form w-100 w-md-75 w-lg-50"
+            style={{
+              borderRadius: "4px",
+              backgroundColor: "#fff",
+              boxShadow: "0px 1px 13px rgba(0, 0, 0, 0.05)",
+              padding: "40px",
+            }}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            onSubmit={handleSave}
+          >
+            <div className="title mb-4">
+              <h2
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "500",
+                  color: "rgba(219, 68, 68, 1)",
+                }}
+              >
+                Edit Your Profile
+              </h2>
             </div>
-            <div className="row" style={{ marginBottom: "140px" }}>
-              <div className="col-xl-3 col-12">
-                <ul className="list-group border-0">
-                  <li
-                    className="list-group-item border-0"
-                    style={{ fontSize: "16px", fontWeight: "500" }}
-                  >
-                    Manage My Account
-                  </li>
-                  <li
-                    className="list-group-item border-0 ps-5"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "300",
-                      color: "rgba(0, 0, 0, 1)",
-                    }}
-                  >
-                    My Profile
-                  </li>
-                  <li
-                    className="list-group-item border-0 ps-5"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "300",
-                      color: "rgba(0, 0, 0, 1)",
-                    }}
-                  >
-                    Address Book
-                  </li>
-                  <li
-                    className="list-group-item border-0 ps-5"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "300",
-                      color: "rgba(0, 0, 0, 1)",
-                    }}
-                  >
-                    My Payment Options
-                  </li>
-                  <li
-                    className="list-group-item border-0"
-                    style={{ fontSize: "16px", fontWeight: "500" }}
-                  >
-                    My Orders
-                  </li>
-                  <li
-                    className="list-group-item border-0 ps-5"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "300",
-                      color: "rgba(0, 0, 0, 1)",
-                    }}
-                  >
-                    My Returns
-                  </li>
-                  <li
-                    className="list-group-item border-0 ps-5"
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "300",
-                      color: "rgba(0, 0, 0, 1)",
-                    }}
-                  >
-                    My Cancellations
-                  </li>
-                  <li
-                    className="list-group-item border-0"
-                    style={{ fontSize: "16px", fontWeight: "500" }}
-                  >
-                    My WishList
-                  </li>
-                </ul>
-              </div>
-              <div className="col-xl-9 col-12">
-                <motion.form
-                  className="form w-100 d-flex align-items-start justify-content-between flex-column"
-                  style={{
-                    height: "auto",
-                    borderRadius: "4px",
-                    backgroundColor: "rgba(255, 255, 255, 1)",
-                    boxShadow: "0px 1px 13px 0px rgba(0, 0, 0, 0.05)",
-                    padding: "40px 80px",
-                  }}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  onSubmit={handleSave}
-                >
-                  <div className="title" style={{ marginBottom: "16px" }}>
-                    <h2
-                      style={{
-                        fontSize: "20px",
-                        fontWeight: "500",
-                        color: "rgba(219, 68, 68, 1)",
-                      }}
-                    >
-                      Edit Your Profile
-                    </h2>
-                  </div>
 
-                  <div
-                    className="row"
-                    style={{ width: "100%", marginBottom: "16px" }}
-                  >
-                    <div className="col-md-6 col-12">
-                      <div className="form-group">
-                        <label
-                          htmlFor="firstName"
-                          style={{ marginBottom: "8px" }}
-                        >
-                          First Name:
-                        </label>
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            height: "50px",
-                          }}
-                          type="text"
-                          id="firstName"
-                          className="form-control"
-                          placeholder="Enter your first name"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-12">
-                      <div className="form-group">
-                        <label
-                          htmlFor="lastName"
-                          style={{ marginBottom: "8px" }}
-                        >
-                          Last Name:
-                        </label>
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            height: "50px",
-                          }}
-                          type="text"
-                          id="lastName"
-                          className="form-control"
-                          placeholder="Enter your last name"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="row"
-                    style={{ width: "100%", marginBottom: "16px" }}
-                  >
-                    <div className="col-md-6 col-12">
-                      <div className="form-group">
-                        <label htmlFor="email" style={{ marginBottom: "8px" }}>
-                          Email
-                        </label>
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            height: "50px",
-                          }}
-                          type="email"
-                          id="email"
-                          className="form-control"
-                          placeholder="Enter your email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-md-6 col-12">
-                      <div className="form-group">
-                        <label
-                          htmlFor="address"
-                          style={{ marginBottom: "8px" }}
-                        >
-                          Address
-                        </label>
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            height: "50px",
-                          }}
-                          type="text"
-                          id="address"
-                          className="form-control"
-                          placeholder="Enter your address"
-                          value={address}
-                          onChange={(e) => setAddress(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    className="row"
-                    style={{ width: "100%", marginBottom: "16px" }}
-                  >
-                    <div className="col-12">
-                      <div className="form-group">
-                        <label
-                          htmlFor="password"
-                          style={{ marginBottom: "8px" }}
-                        >
-                          Password Changes
-                        </label>
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            marginBottom: "16px",
-                            height: "50px",
-                          }}
-                          type="password"
-                          id="password"
-                          className="form-control"
-                          placeholder="Enter new password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      <div className="form-group">
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            marginBottom: "16px",
-                            height: "50px",
-                          }}
-                          type="password"
-                          id="confirmPassword"
-                          className="form-control"
-                          placeholder="Confirm new password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      <div className="form-group">
-                        <input
-                          style={{
-                            backgroundColor: "rgba(245, 245, 245, 1)",
-                            marginBottom: "16px",
-                            height: "50px",
-                          }}
-                          type="password"
-                          id="oldPassword"
-                          className="form-control"
-                          placeholder="Enter current password"
-                          value={oldPassword}
-                          onChange={(e) => setOldPassword(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row w-100">
-                    <div className="col-12">
-                      <div className="d-flex text-end justify-content-end gap-3 align-items-center">
-                        <p className="p-0 m-0">Cancel</p>
-                        <motion.button
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.8 }}
-                          style={{
-                            width: "214px",
-                            height: "56px",
-                            borderRadius: "4px",
-                            border: "none",
-                            backgroundColor: "rgba(219, 68, 68, 1)",
-                            fontSize: "16px",
-                            fontWeight: "500",
-                            color: "white",
-                          }}
-                          type="submit"
-                        >
-                          Save Changes
-                        </motion.button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.form>
-              </div>
+            <div className="form-group mb-3">
+              <label htmlFor="name">Name:</label>
+              <input
+                type="text"
+                id="name"
+                className="form-control"
+                placeholder="Enter your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
-          </div>
+
+            <div className="form-group mb-3">
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                className="form-control"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group mb-3">
+              <label htmlFor="currentPassword">Current Password:</label>
+              <input
+                type="password"
+                id="currentPassword"
+                className="form-control"
+                placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group mb-3">
+              <label htmlFor="newPassword">New Password:</label>
+              <input
+                type="password"
+                id="newPassword"
+                className="form-control"
+                placeholder="Enter new password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group mb-4">
+              <label htmlFor="confirmPassword">Confirm New Password:</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className="form-control"
+                placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="d-flex justify-content-end gap-3">
+              <p className="m-0">Cancel</p>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                type="submit"
+                style={{
+                  width: "180px",
+                  height: "50px",
+                  borderRadius: "4px",
+                  border: "none",
+                  backgroundColor: "rgba(219, 68, 68, 1)",
+                  color: "white",
+                  fontWeight: "500",
+                }}
+              >
+                Save Changes
+              </motion.button>
+            </div>
+          </motion.form>
         </div>
       </section>
       <Footer />

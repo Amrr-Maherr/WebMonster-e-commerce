@@ -206,7 +206,7 @@ export default function ResetPassword() {
                   </motion.button>
 
                   <Link
-                    to="/login"
+                    to="/"
                     style={{
                       fontSize: "16px",
                       fontWeight: "400",

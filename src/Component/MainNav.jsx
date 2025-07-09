@@ -10,14 +10,12 @@ export default function MainNav() {
   const nav = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("signup_data");
-    setIsLoggedIn(!!user);
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
 
-    // Get cart count from localStorage
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartCount(cart.length);
 
-    // Listen for cart changes in other tabs/windows
     const handleStorage = (e) => {
       if (e.key === "cart") {
         const updatedCart = JSON.parse(e.newValue) || [];
@@ -30,9 +28,17 @@ export default function MainNav() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("signup_data");
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
     nav("/login");
+  };
+
+  // 🔒 دالة لمنع الضغط إذا مش مسجل دخول
+  const handleProtectedClick = (e) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      nav("/login");
+    }
   };
 
   return (
@@ -60,35 +66,58 @@ export default function MainNav() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="/">
+                <Link
+                  className="nav-link active"
+                  aria-current="page"
+                  to="/Home"
+                  onClick={handleProtectedClick}
+                >
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/contact">
+                <Link
+                  className="nav-link"
+                  to="/contact"
+                  onClick={handleProtectedClick}
+                >
                   Contact
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/about">
+                <Link
+                  className="nav-link"
+                  to="/about"
+                  onClick={handleProtectedClick}
+                >
                   About
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/signup">
-                  Sign Up
-                </Link>
-              </li>
+              {!isLoggedIn && (
+                <li className="nav-item">
+                  <Link className="nav-link" to="/signup">
+                    Sign Up
+                  </Link>
+                </li>
+              )}
             </ul>
             <ul className="navbar-nav-two d-flex align-items-center gap-3">
-              <ul className="list-unstyled d-flex gap-3 m-0">
+              <ul className="list-unstyled d-flex align-items-center gap-3 m-0">
                 <li className="nav-item">
-                  <Link to="/favorite" className="text-danger">
+                  <Link
+                    to="/favorite"
+                    className="text-danger"
+                    onClick={handleProtectedClick}
+                  >
                     <i className="fas fa-heart"></i>
                   </Link>
                 </li>
                 <li className="nav-item position-relative">
-                  <Link to="/cart" style={{ color: "black" }}>
+                  <Link
+                    to="/cart"
+                    style={{ color: "black" }}
+                    onClick={handleProtectedClick}
+                  >
                     <i className="fas fa-shopping-cart"></i>
                     {cartCount > 0 && (
                       <span
@@ -122,7 +151,11 @@ export default function MainNav() {
                     borderRadius: "50%",
                   }}
                 >
-                  <Link to="/profile" style={{ color: "white" }}>
+                  <Link
+                    to="/profile"
+                    style={{ color: "white" }}
+                    onClick={handleProtectedClick}
+                  >
                     <i className="fas fa-user"></i>
                   </Link>
                 </li>
