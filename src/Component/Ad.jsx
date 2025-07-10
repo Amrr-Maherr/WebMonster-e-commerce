@@ -1,6 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function Ad({ image, title, text, buttonLabel, onButtonClick }) {
+export default function Ad({ product, title, text, buttonLabel }) {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    if (product?.id) {
+      navigate(`/product/${product.id}`);
+    }
+  };
+
   return (
     <section>
       <div
@@ -8,8 +17,8 @@ export default function Ad({ image, title, text, buttonLabel, onButtonClick }) {
         style={{
           width: "100%",
           minHeight: "500px",
-          backgroundImage: `url(${image})`,
-          backgroundSize: "cover",
+          backgroundImage: `url(${product?.photo})`,
+          backgroundSize: "contain",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
           borderRadius: "18px",
@@ -33,7 +42,7 @@ export default function Ad({ image, title, text, buttonLabel, onButtonClick }) {
           >
             {title}
           </h2>
-          <p style={{ fontSize: "1.1rem", marginBottom: "22px" }}>{text}</p>
+          
           <button
             className="btn btn-danger px-4 py-2"
             style={{
@@ -41,7 +50,7 @@ export default function Ad({ image, title, text, buttonLabel, onButtonClick }) {
               fontSize: "1.1rem",
               borderRadius: "8px",
             }}
-            onClick={onButtonClick}
+            onClick={handleButtonClick}
           >
             {buttonLabel}
           </button>
