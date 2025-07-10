@@ -6,7 +6,7 @@ export default function SubNav() {
     <motion.header
       className="subnav-header"
       initial={{ opacity: 0, y: -50 }}
-      animate={{ opacity: 1, y: 0 }} 
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
       <nav className="subnav-nav">
@@ -14,7 +14,7 @@ export default function SubNav() {
           <p className="subnav-text p-0 m-0">
             Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
           </p>
-          <a href="/" className="subnav-link">
+          <a href="/all-products" className="subnav-link">
             Shop Now
           </a>
         </div>
