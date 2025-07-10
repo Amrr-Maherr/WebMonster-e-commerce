@@ -30,14 +30,13 @@ export default function MainNav() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    nav("/login");
+    nav("/");
   };
 
-  // 🔒 دالة لمنع الضغط إذا مش مسجل دخول
   const handleProtectedClick = (e) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      nav("/login");
+      nav("/");
     }
   };
 

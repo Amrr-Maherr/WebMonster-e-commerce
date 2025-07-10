@@ -161,7 +161,7 @@ export default function ForgetPassword() {
                     Send Link
                   </motion.button>
                   <Link
-                    to="/login"
+                    to="/"
                     style={{
                       fontSize: "16px",
                       fontWeight: "400",

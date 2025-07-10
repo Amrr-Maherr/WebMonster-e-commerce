@@ -55,7 +55,7 @@ export default function ResetPassword() {
 
       if (response.ok) {
         toast.success(data.message || "Password reset successfully!");
-        setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => navigate("/"), 2000);
       } else {
         toast.error(data.message || "Something went wrong.");
       }
