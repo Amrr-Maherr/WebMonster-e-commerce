@@ -108,7 +108,7 @@ export default function AllProducts() {
       <VideoBackgroundSection
         title="Taste the Freshness"
         text="Discover high-quality organic and gourmet foods delivered straight to your doorstep. Eat healthy, live better."
-        videoSrc="https://videocdn.cdnpk.net/videos/ef621f86-8584-4aa0-b5db-e07a56d0fe23/horizontal/previews/clear/small.mp4?token=exp=1751839420~hmac=3ca5e4a38026d7ac93eae1a6e612d76d30116c2facb45835b9ef6ee4919aff33"
+        videoSrc="/videos/0_Grocery_Store_Shopping_3840x2160.mp4"
       />
 
       <section className="container my-5">
