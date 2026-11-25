@@ -50,3 +50,7 @@ src/
 ## Notes
 
 Product data comes from a custom backend API (`my-api-production-3918.up.railway.app`); the backend is not part of this repository.
+
+## Live
+
+https://web-monster-e-commerce.vercel.app
